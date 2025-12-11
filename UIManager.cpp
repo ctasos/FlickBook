@@ -852,6 +852,7 @@ bool UIManager::handleTouchReadingHeader(uint16_t x, uint16_t y, uint8_t touch_t
         Serial.println("Touched Header Item: RELOAD");
         epubParser.parseEpubMetadata(libraryManager.getCurrentBook());
         libraryManager.initBookUserData();
+        libraryManager.initCurrentPageSections();
         currentSection = 0;
         // previousSectionIndex = 0;
         // currentSectionIndex = 0;
@@ -1186,8 +1187,9 @@ void UIManager::processTextBlock(
     // consumedFromInput = i - startIdx;
     if (text.substring(i, i + 10) == "<img src=\"")
     {
+      // Before handling the image, ensure any pending text is flushed
       if (flushCurrentLine(i))
-        return; // break occurred
+        return; // a break occurred while flushing text
       if (!word.isEmpty())
       {
         currentLine += word + " ";
@@ -1195,28 +1197,52 @@ void UIManager::processTextBlock(
         if (flushCurrentLine(i))
           return;
       }
+
+      // Parse image tag and resolve path
       int closingQuote = text.indexOf("\"", i + 10);
       if (closingQuote == -1)
         continue;
-
       String imgPath = text.substring(i + 10, closingQuote);
-      i = closingQuote + 2;
-      // consumedFromInput = i - startIdx; // we've consumed up to after the image tag
-      imgPath = "/library/" + libraryManager.getCurrentBook() + "/" + pagePath + imgPath;
-      imgPath = sdHandler.normalizePath(imgPath);
+      int tagEndIndex = closingQuote + 2; // position after closing quote and trailing character(s)
+
+      String fullImgPath = "/library/" + libraryManager.getCurrentBook() + "/" + pagePath + imgPath;
+      fullImgPath = sdHandler.normalizePath(fullImgPath);
 
       int imgW, imgH;
-      sdHandler.getImageDimensions(imgPath, imgW, imgH);
+      sdHandler.getImageDimensions(fullImgPath, imgW, imgH);
 
+      // If image is taller than the page height, ensure it's rendered starting on a fresh page.
+      if (imgH > height)
+      {
+        // If we're not at the top of the page, break now and start next page from the image tag
+        if (cursorY != startY)
+        {
+          onPageBreak((size_t)(i - startIdx));
+          return;
+        }
+        // We are at the top: render the oversized image anyway
+        onRenderImage(fullImgPath, cursorX, cursorY, imgW, imgH);
+        cursorY += imgH;
+        remainingHeight = 0;                                  // no more space on this page
+        consumedFromInput = (size_t)(tagEndIndex - startIdx); // advance past the image tag for next section
+        onPageBreak(consumedFromInput);
+        return;
+      }
+
+      // Image fits within a page but not the remaining space: break to next page starting at image
       if (remainingHeight < imgH)
       {
-        Serial.printf("[processTextBlock] PageBreak on image: consumed=%u i=%u startIdx=%u\n", (unsigned)consumedFromInput, (unsigned)i, (unsigned)startIdx);
-        onPageBreak(consumedFromInput);
-        return; // early exit on page break
+        onPageBreak((size_t)(i - startIdx));
+        return;
       }
-      onRenderImage(imgPath, cursorX, cursorY, imgW, imgH);
+
+      // Render image on current page
+      onRenderImage(fullImgPath, cursorX, cursorY, imgW, imgH);
       cursorY += imgH;
       remainingHeight -= imgH;
+
+      // Advance parser index to after the image tag and continue
+      i = tagEndIndex;
       continue;
     }
 
@@ -1363,6 +1389,15 @@ int UIManager::sectionsForTextBlock(int startX, int startY, int width, int heigh
   // Streaming implementation: use epubParser.getPageContent(book,page,start,len) to walk the entire page
   // and simulate layout with processTextBlock over each accumulated slice. We avoid building the full page string.
   sectionStarts.clear();
+
+  // Try to load cached sections from storage
+  std::vector<size_t> cachedSections;
+  if (libraryManager.loadCurrentPageSections(cachedSections) && !cachedSections.empty())
+  {
+    sectionStarts = cachedSections;
+    return (int)sectionStarts.size();
+  }
+
   // Ensure font matches renderTextBlockSection for consistent measurements
   setFont(FONT_PRIM, FONT_SIZE_DEFAULT);
   // Ensure pagePath is set so image dimensions resolve correctly during layout
@@ -1400,6 +1435,7 @@ int UIManager::sectionsForTextBlock(int startX, int startY, int width, int heigh
         [&](const String &path, int x, int y, int w, int h)
         {
           // Image callback not used for index calculation here
+          // TODO: There is still a small bug sometime loosing a section when there are in page images
         },
         [&](size_t consumedFromInput)
         {
@@ -1416,6 +1452,8 @@ int UIManager::sectionsForTextBlock(int startX, int startY, int width, int heigh
     // Accumulated buffer fully processed; clear to avoid re-processing
     // accumulated = ""; // we rely solely on processedChars continuing from previous
   }
+  // Persist computed sections for future loads
+  libraryManager.saveCurrentPageSections(sectionStarts);
   return (int)sectionStarts.size();
 }
 

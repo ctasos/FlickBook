@@ -22,6 +22,7 @@ public:
     bool createFolderRecursive(const String &path);
     String normalizePath(String path);
     bool getImageDimensions(const String &path, int &width, int &height);
+    bool fileExists(const String &path);
     // bool ditherImage(const String &inputPath, const String &outputPath);
     void getPixelColor(SdFile &file, int x, int y, int imageWidth, uint8_t &r, uint8_t &g, uint8_t &b);
     // bool savePng(const String &outputPath, uint8_t *image, int width, int height);

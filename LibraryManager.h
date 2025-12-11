@@ -34,6 +34,9 @@ public:
     bool prevPage();
     bool getIsFinished();
     void setIsFinished(bool isFinished);
+    bool loadCurrentPageSections(std::vector<size_t> &sections);
+    bool saveCurrentPageSections(std::vector<size_t> sections);
+    bool initCurrentPageSections();
 
 private:
     String currentBook;

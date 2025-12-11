@@ -315,3 +315,77 @@ void LibraryManager::setIsFinished(bool isFinished)
     saveBookUserData();
   }
 }
+
+bool LibraryManager::loadCurrentPageSections(std::vector<size_t> &sections)
+{
+  sections.clear();
+
+  String path = "/library/" + currentBook + "/pagesections.json";
+  if (!sdHandler.fileExists(path))
+  {
+    // File missing: return false so caller can handle via if/else
+    return false;
+  }
+
+  StaticJsonDocument<4096> pageSections = sdHandler.loadJson(path);
+  int currentPage = getCurrentPage();
+
+  JsonVariant v = pageSections[String(currentPage)];
+  if (v.isNull())
+  {
+    // File exists but no entry for current page; treat as success with empty sections
+    return true;
+  }
+
+  if (!v.is<JsonArray>())
+  {
+    // Malformed content for this page key
+    return false;
+  }
+
+  JsonArray arr = v.as<JsonArray>();
+  for (JsonVariant value : arr)
+  {
+    size_t section = static_cast<size_t>(value.as<unsigned long>());
+    sections.push_back(section);
+  }
+
+  return true;
+}
+
+bool LibraryManager::saveCurrentPageSections(std::vector<size_t> sections)
+{
+  StaticJsonDocument<4096> pageSections = sdHandler.loadJson("/library/" + currentBook + "/pagesections.json");
+  int currentPage = getCurrentPage();
+
+  // Create or overwrite the array for the current page
+  JsonArray arr = pageSections[String(currentPage)].to<JsonArray>();
+  arr.clear();
+  for (size_t section : sections)
+  {
+    arr.add(static_cast<unsigned long>(section));
+  }
+
+  serializeJson(pageSections, Serial);
+  Serial.println();
+  return sdHandler.saveJson("/library/" + currentBook + "/pagesections.json", pageSections);
+}
+
+bool LibraryManager::initCurrentPageSections()
+{
+  String path = "/library/" + currentBook + "/pagesections.json";
+
+  // Create an empty JSON document
+  StaticJsonDocument<4096> emptyDoc;
+  // Optionally initialize with an empty array for the current page
+  // emptyDoc[String(getCurrentPage())] = emptyDoc.createNestedArray();
+
+  bool ok = sdHandler.saveJson(path, emptyDoc);
+  if (!ok)
+  {
+    Serial.println("Failed to initialize pagesections.json");
+    return false;
+  }
+  Serial.println("Initialized pagesections.json for book: " + currentBook);
+  return true;
+}

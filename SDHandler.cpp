@@ -370,6 +370,18 @@ String SDHandler::normalizePath(String path)
     return normalizedPath;
 }
 
+bool SDHandler::fileExists(const String &path)
+{
+    SdFile f;
+    bool ok = f.open(path.c_str(), O_RDONLY);
+    if (ok)
+    {
+        f.close();
+        return true;
+    }
+    return false;
+}
+
 bool SDHandler::getImageDimensions(const String &path, int &width, int &height)
 {
     SdFile file;
