@@ -19,8 +19,8 @@ SDHandler sdHandler(&display);
 EpubParser epubParser;
 // SdFat sd;
 
-
-void setup() {
+void setup()
+{
     Serial.begin(115200);
     display.begin();
     display.setRotation(1); // Portrait mode
@@ -29,9 +29,9 @@ void setup() {
     settingsManager.init();
     libraryManager.init();
     uiManager.init();
-    
 }
 
-void loop() {
+void loop()
+{
     uiManager.handleTouch();
 }

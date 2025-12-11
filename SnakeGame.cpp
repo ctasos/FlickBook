@@ -1,9 +1,10 @@
 #include "SnakeGame.h"
 
-SnakeGame::SnakeGame(Inkplate* disp, std::function<void()> exitCallback)
-: display(disp), exitGame(exitCallback), cellSize(24), dir(RIGHT), lastMove(0), speed(0) {}
+SnakeGame::SnakeGame(Inkplate *disp, std::function<void()> exitCallback)
+    : display(disp), exitGame(exitCallback), cellSize(24), dir(RIGHT), lastMove(0), speed(0) {}
 
-void SnakeGame::begin() {
+void SnakeGame::begin()
+{
   display->clearDisplay();
   display->setFullUpdateThreshold(0);
   display->partialUpdate(true);
@@ -28,37 +29,48 @@ void SnakeGame::begin() {
   display->display();
 }
 
-void SnakeGame::placeFood() {
-  while (true) {
+void SnakeGame::placeFood()
+{
+  while (true)
+  {
     int fx = random(0, gridW);
     int fy = random(0, gridH);
     bool occupied = false;
-    for (int i = 0; i < snakeLength; ++i) {
+    for (int i = 0; i < snakeLength; ++i)
+    {
       int idx = (headIndex + i) % MAX_SNAKE_LENGTH;
-      if (snake[idx].first == fx && snake[idx].second == fy) {
+      if (snake[idx].first == fx && snake[idx].second == fy)
+      {
         occupied = true;
         break;
       }
     }
-    if (!occupied) { food = {fx, fy}; break; }
+    if (!occupied)
+    {
+      food = {fx, fy};
+      break;
+    }
   }
 }
 
-void SnakeGame::drawCell(int gx, int gy, bool fill) {
+void SnakeGame::drawCell(int gx, int gy, bool fill)
+{
   int x = 2 + gx * cellSize;
   int y = 2 + gy * cellSize;
   display->fillRect(x, y, cellSize, cellSize, fill ? BLACK : WHITE);
 }
 
-void SnakeGame::drawBorder() {
+void SnakeGame::drawBorder()
+{
   int height = gridH * cellSize + 4;
   display->drawRect(0, 0, display->width(), height, BLACK);
 }
 
-void SnakeGame::drawControls() {
+void SnakeGame::drawControls()
+{
   int sz = 100;
   int margin = 5;
-  int controlCenterX = 4*display->width() / 5;
+  int controlCenterX = 4 * display->width() / 5;
   int controlCenterY = display->height() - sz * 1.5 - margin;
 
   display->fillRect(0, display->height() - sz * 3 - margin * 2, display->width(), sz * 3 + margin * 2, WHITE);
@@ -80,14 +92,17 @@ void SnakeGame::drawControls() {
                         controlCenterX + sz / 2, controlCenterY + sz / 2, BLACK);
 }
 
-void SnakeGame::update() {
-  if (millis() - lastMove < speed) return;
+void SnakeGame::update()
+{
+  if (millis() - lastMove < speed)
+    return;
   lastMove = millis();
 
   int tailIdx = (headIndex + snakeLength - 1) % MAX_SNAKE_LENGTH;
   auto oldTail = snake[tailIdx];
 
-  if (!moveSnake()) {
+  if (!moveSnake())
+  {
     exitGame();
     return;
   }
@@ -98,20 +113,31 @@ void SnakeGame::update() {
   drawCell(newHead.first, newHead.second, true);
   drawCell(food.first, food.second, true);
 
-  display->partialUpdate(true,true);
+  display->partialUpdate(true, true);
 }
 
-bool SnakeGame::moveSnake() {
+bool SnakeGame::moveSnake()
+{
   auto head = snake[headIndex];
   int x = head.first, y = head.second;
-  switch(dir) {
-    case UP:    y = (y - 1 + gridH) % gridH; break;
-    case DOWN:  y = (y + 1) % gridH; break;
-    case LEFT:  x = (x - 1 + gridW) % gridW; break;
-    case RIGHT: x = (x + 1) % gridW; break;
+  switch (dir)
+  {
+  case UP:
+    y = (y - 1 + gridH) % gridH;
+    break;
+  case DOWN:
+    y = (y + 1) % gridH;
+    break;
+  case LEFT:
+    x = (x - 1 + gridW) % gridW;
+    break;
+  case RIGHT:
+    x = (x + 1) % gridW;
+    break;
   }
 
-  for (int i = 0; i < snakeLength; ++i) {
+  for (int i = 0; i < snakeLength; ++i)
+  {
     int idx = (headIndex + i) % MAX_SNAKE_LENGTH;
     if (snake[idx].first == x && snake[idx].second == y)
       return false;
@@ -120,18 +146,21 @@ bool SnakeGame::moveSnake() {
   headIndex = (headIndex - 1 + MAX_SNAKE_LENGTH) % MAX_SNAKE_LENGTH;
   snake[headIndex] = {x, y};
 
-  if (x == food.first && y == food.second) {
-    if (snakeLength < MAX_SNAKE_LENGTH) ++snakeLength;
+  if (x == food.first && y == food.second)
+  {
+    if (snakeLength < MAX_SNAKE_LENGTH)
+      ++snakeLength;
     placeFood();
   }
 
   return true;
 }
 
-void SnakeGame::onTouch(uint16_t tx, uint16_t ty) {
+void SnakeGame::onTouch(uint16_t tx, uint16_t ty)
+{
   int sz = 100;
   int margin = 5;
-  int controlCenterX = 4*display->width() / 5;
+  int controlCenterX = 4 * display->width() / 5;
   int controlCenterY = display->height() - sz * 1.5 - margin;
 
   if (tx > controlCenterX - sz / 2 && tx < controlCenterX + sz / 2 &&

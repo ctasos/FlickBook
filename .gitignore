@@ -4,3 +4,4 @@
 sdcard/books
 sdcard/library
 media/archive
+*.code-workspace

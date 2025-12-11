@@ -14,9 +14,10 @@
 #define BACKLIGHT_L5 55
 const String settings_file = "/settings.json";
 
-class SettingsManager {
+class SettingsManager
+{
 public:
-    SettingsManager(Inkplate* display);
+    SettingsManager(Inkplate *display);
     void init();
     void loadSettings();
     void saveSettings();
@@ -31,12 +32,13 @@ public:
     void setGestures(bool val);
     bool getWebserver();
     void setWebserver(bool val);
+
 private:
-    Inkplate* display;
+    Inkplate *display;
     // int fontSize;
     int backlight;
     bool gestures;
     bool webserver;
-    bool o[3] = {1,1,1};
+    bool o[3] = {1, 1, 1};
 };
 #endif

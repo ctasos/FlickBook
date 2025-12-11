@@ -6,14 +6,15 @@
 #include <ArduinoJson.h>
 #include <JPEGDEC.h>
 
-class SDHandler {
+class SDHandler
+{
 public:
-    SDHandler(Inkplate* display);
+    SDHandler(Inkplate *display);
     void init();
-    std::vector<String> listFiles(String path, bool no_ext = false,  bool deep = false, String prefix = "");
+    std::vector<String> listFiles(String path, bool no_ext = false, bool deep = false, String prefix = "");
     bool saveJson(String filename, String keys[], String values[], uint8_t n);
     bool saveJson(String filename, JsonDocument &doc);
-    StaticJsonDocument<800> loadJson(String filename);
+    StaticJsonDocument<4096> loadJson(String filename);
     String loadFile(String filename);
     bool folderExists(const String &path);
     bool createFolder(const String &parentPath, const String &folderName);
@@ -25,8 +26,7 @@ public:
     void getPixelColor(SdFile &file, int x, int y, int imageWidth, uint8_t &r, uint8_t &g, uint8_t &b);
     // bool savePng(const String &outputPath, uint8_t *image, int width, int height);
 private:
-    Inkplate* display;
+    Inkplate *display;
     bool getJpegDimensions(const String &path, int &width, int &height);
-
 };
 #endif

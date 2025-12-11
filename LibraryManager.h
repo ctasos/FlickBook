@@ -5,13 +5,14 @@
 #include "EpubParser.h"
 #include <ArduinoJson.h>
 
-class LibraryManager {
+class LibraryManager
+{
 public:
     LibraryManager();
     void init();
     void loadLibrary();
     bool loadBookUserData();
-    StaticJsonDocument<800> fetchBookUserData(String book);
+    StaticJsonDocument<4096> fetchBookUserData(String book);
     std::vector<String> getLibrary();
     bool saveBookUserData();
     bool initBookUserData();
@@ -21,21 +22,24 @@ public:
     int getCurrentPage();
     void setCurrentPage(int page);
     int getCurrentSection();
-    void setCurrentSection(int page);
+    void setCurrentSection(int section);
+    int getCurrentSectionIndex();
+    void setCurrentSectionIndex(int section_index);
     int getTotalPage();
     String getTitle();
     String getAuthor();
-    String getCurrentPageContent(int max_c = 0);
+    String getCurrentPageContent(uint start_index = 0, uint length = 2000);
     String getCurrentPagePath();
     bool nextPage();
     bool prevPage();
     bool getIsFinished();
     void setIsFinished(bool isFinished);
+
 private:
     String currentBook;
     String currentPageString;
     String currentPagePath;
-    StaticJsonDocument<800> userData;
+    StaticJsonDocument<4096> userData;
     std::vector<String> library;
 };
 #endif
