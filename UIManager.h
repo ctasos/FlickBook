@@ -98,6 +98,9 @@ const int LIST_DOWN_ARROW_TOUCH[] = {TOT_W - 2.5 * LIST_SCROLLBAR_WIDTH - LIST_A
                                      TOT_H - MENU_ITEM_SIZE - 2 * LIST_ARROW_SIZE - LIST_ARROW_TOUCH_PADDING_Y,
                                      LIST_ARROW_SIZE + 2 * LIST_ARROW_TOUCH_PADDING_X,
                                      LIST_ARROW_SIZE + 2 * LIST_ARROW_TOUCH_PADDING_Y};
+#define LIST_ICON_FINISHED "checkbox_checked_ic"
+#define LIST_ICON_FINISHED_SIZE (30)
+#define LIST_ICON_X (6 * LIST_WIDTH / 7 - LIST_ICON_FINISHED_SIZE)
 #define BOOK_PAGE_X (50)
 #define BOOK_PAGE_Y (110)
 #define BOOK_PAGE_W (TOT_W - 2 * BOOK_PAGE_X)
@@ -183,6 +186,7 @@ public:
     bool handleTouchMainHeader(uint16_t x, uint16_t y, uint8_t touch_type);
     bool handleTouchReadingHeader(uint16_t x, uint16_t y, uint8_t touch_type);
     bool handleTouchReadingPage(uint16_t x, uint16_t y, uint8_t touch_type);
+    bool handleTouchSettingsPage(uint16_t x, uint16_t y, uint8_t touch_type);
     void drawBattery(bool invert = 0);
     void renderLoadingMsg(const String &message = "Loading...", bool partial_update = PARTIAL_UPDATE_ALLOWED);
     void renderLoadingIcon(bool partial_update = PARTIAL_UPDATE_ALLOWED);

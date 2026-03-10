@@ -298,7 +298,7 @@ bool LibraryManager::getIsFinished()
   if (!userData.isNull() && !userData.size() == 0)
   {
     bool isFinished = bool(userData["isFinished"].as<int>());
-    Serial.println("Getting isFinished: " + isFinished);
+    Serial.println("Getting isFinished: " + String(isFinished));
     return isFinished;
   }
   else
@@ -311,6 +311,7 @@ void LibraryManager::setIsFinished(bool isFinished)
 {
   if (!userData.isNull() && !userData.size() == 0)
   {
+    Serial.println("Setting isFinished: " + String(isFinished));
     userData["isFinished"] = String(isFinished);
     saveBookUserData();
   }

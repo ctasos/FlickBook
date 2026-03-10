@@ -132,7 +132,8 @@ void UIManager::renderBookList(bool partial_update)
         String pages = bookUserData["pages"];
         int lastPage = bookUserData["lastPage"].as<int>();
         String itemTitle = bookName;
-        String itemProgress = "(" + String(lastPage + 1) + "/" + pages + ")";
+        String itemProgress = String(lastPage + 1) + "/" + pages;
+        bool isFinished = bool(bookUserData["isFinished"].as<int>());
         if (itemTitle.length() > LIST_ITEM_MAX_CHARS)
         {
             itemTitle = itemTitle.substring(0, LIST_ITEM_MAX_CHARS - 3) + "..."; // Truncate and add '...'
@@ -143,9 +144,13 @@ void UIManager::renderBookList(bool partial_update)
         display->print(itemTitle);
         setFont(FONT_PRIM, FONT_SIZE_DEFAULT);
         display->setCursor(LIST_START_X + 10, y + 4 * LIST_ITEM_HEIGHT / 5);
-        display->print("by " + author);
+        display->print(author);
+        if (isFinished)
+        {
+            drawIcon(LIST_ICON_FINISHED, LIST_ICON_X, y + 4 * LIST_ITEM_HEIGHT / 5 - LIST_ICON_FINISHED_SIZE, false);
+        }
         setFont(FONT_ALT, FONT_SIZE_DEFAULT);
-        display->setCursor(LIST_WIDTH - itemProgress.length() * 10, y + 4 * LIST_ITEM_HEIGHT / 5);
+        display->setCursor(LIST_WIDTH - itemProgress.length() * 11, y + 4 * LIST_ITEM_HEIGHT / 5);
         display->print(itemProgress);
     }
 

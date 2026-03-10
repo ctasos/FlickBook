@@ -139,6 +139,10 @@ void UIManager::handleShortTouch(uint16_t x, uint16_t y)
     {
         // handled
     }
+    else if (handleTouchSettingsPage(x, y, TOUCH_TYPE_SHORT))
+    {
+        // handled
+    }
 }
 
 void UIManager::handleLongTouch(uint16_t x, uint16_t y)
@@ -269,6 +273,21 @@ bool UIManager::handleTouchBookList(uint16_t x, uint16_t y, uint8_t touch_type)
                         loadPageSections();
                         loadSectionContent();
                         renderScreen(READING_SCREEN);
+                        return true;
+                    }
+                    else if (touch_type == TOUCH_TYPE_LONG)
+                    {
+                        Serial.print("Long pressed: ");
+                        Serial.println(bookList[scrollIndex + index]);
+                        flushTS(30);
+                        libraryManager.loadCurrentBook(bookList[scrollIndex + index]);
+                        // currentSection = libraryManager.getCurrentSection();
+                        // currentSectionIndex = libraryManager.getCurrentSectionIndex();
+                        // nextSectionIndex = currentSectionIndex;
+                        // loadPageSections();
+                        // loadSectionContent();
+                        libraryManager.setIsFinished(!libraryManager.getIsFinished());
+                        renderScreen(MAIN_SCREEN, true, true);
                         return true;
                     }
                     else if (touch_type == TOUCH_TYPE_SDOWN)
@@ -482,7 +501,7 @@ bool UIManager::handleTouchReadingPage(uint16_t x, uint16_t y, uint8_t touch_typ
     {
         if ((x >= BOOK_PAGE_X) and (y >= BOOK_PAGE_Y) and (y <= BOOK_PAGE_Y + BOOK_PAGE_H))
         {
-            if (touch_type == TOUCH_TYPE_SDOWN)
+            if ((touch_type == TOUCH_TYPE_SDOWN) and (settingsManager.getGestures()))
             {
                 Serial.println("Touched Reading Page: Swiped Down");
                 currentSection++;
@@ -503,7 +522,7 @@ bool UIManager::handleTouchReadingPage(uint16_t x, uint16_t y, uint8_t touch_typ
 
                 return true;
             }
-            else if (touch_type == TOUCH_TYPE_SUP)
+            else if ((touch_type == TOUCH_TYPE_SUP) and (settingsManager.getGestures()))
             {
                 Serial.println("Touched Reading Page: Swiped Up");
                 currentSection--;
@@ -524,7 +543,7 @@ bool UIManager::handleTouchReadingPage(uint16_t x, uint16_t y, uint8_t touch_typ
 
                 return true;
             }
-            else if (touch_type == TOUCH_TYPE_SLEFT)
+            else if ((touch_type == TOUCH_TYPE_SLEFT) and (settingsManager.getGestures()))
             {
                 Serial.println("Touched Reading Page: Swiped Left");
                 if (libraryManager.prevPage())
@@ -542,7 +561,7 @@ bool UIManager::handleTouchReadingPage(uint16_t x, uint16_t y, uint8_t touch_typ
 
                 return true;
             }
-            else if (touch_type == TOUCH_TYPE_SRIGHT)
+            else if ((touch_type == TOUCH_TYPE_SRIGHT) and (settingsManager.getGestures()))
             {
                 Serial.println("Touched Reading Page: Swiped Right");
                 if (libraryManager.nextPage())
@@ -587,5 +606,36 @@ bool UIManager::handleTouchMainHeader(uint16_t x, uint16_t y, uint8_t touch_type
             }
         }
     }
+    return false;
+}
+
+bool UIManager::handleTouchSettingsPage(uint16_t x, uint16_t y, uint8_t touch_type)
+{
+    if (currentScreen == SETTINGS_SCREEN)
+    {
+        if ((x >= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70)) and (y >= (SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2)) and (x <= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70 + SETTINGS_ITEM_STATUS_ICON_SIZE)) and (y <= (SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2 + SETTINGS_ITEM_STATUS_ICON_SIZE)))
+        {
+            if (touch_type == TOUCH_TYPE_SHORT)
+            {
+                Serial.println("Touched Settings Item Gestures: Short Touch");
+                settingsManager.setGestures(!settingsManager.getGestures());
+                renderScreen(SETTINGS_SCREEN, true, true);
+                flushTS(50);
+                return true;
+            }
+        }
+        else if ((x >= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70)) and (y >= (SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2)) and (x <= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70 + SETTINGS_ITEM_STATUS_ICON_SIZE)) and (y <= (SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2 + SETTINGS_ITEM_STATUS_ICON_SIZE)))
+        {
+            if (touch_type == TOUCH_TYPE_SHORT)
+            {
+                Serial.println("Touched Settings Item WebServer: Short Touch");
+                settingsManager.setWebserver(!settingsManager.getWebserver());
+                renderScreen(SETTINGS_SCREEN, true, true);
+                flushTS(50);
+                return true;
+            }
+        }
+    }
+
     return false;
 }
