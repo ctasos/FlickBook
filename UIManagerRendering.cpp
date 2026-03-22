@@ -46,6 +46,23 @@ void UIManager::renderMenu(bool partial_update)
         display->fillRoundRect(MENU_ITEM_DOWN[0], MENU_ITEM_DOWN[1], MENU_ITEM_DOWN[2], MENU_ITEM_DOWN[3], MENU_ITEM_RADIUS, BLACK); // Arguments are: start X, start Y, size X, size Y, radius, color
         drawIcon(MENU_ITEM_ICON[6], MENU_ITEM_DOWN[0] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, MENU_ITEM_DOWN[1] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, true);
     }
+    else if (currentScreen == MAIN_SCREEN)
+    {
+        bool showFinishedBooks = libraryManager.getShowFinishedBooks();
+        if (showFinishedBooks)
+        {
+            display->fillRoundRect(MENU_ITEM_SHOW_FINISHED[0], MENU_ITEM_SHOW_FINISHED[1], MENU_ITEM_SHOW_FINISHED[2], MENU_ITEM_SHOW_FINISHED[3], MENU_ITEM_RADIUS, BLACK);
+        }
+        else
+        {
+            display->drawRoundRect(MENU_ITEM_SHOW_FINISHED[0], MENU_ITEM_SHOW_FINISHED[1], MENU_ITEM_SHOW_FINISHED[2], MENU_ITEM_SHOW_FINISHED[3], MENU_ITEM_RADIUS, BLACK);
+        }
+
+        drawIcon(MENU_ITEM_SHOW_FINISHED_ICON,
+                 MENU_ITEM_SHOW_FINISHED[0] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2,
+                 MENU_ITEM_SHOW_FINISHED[1] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2,
+                 showFinishedBooks);
+    }
     if (partial_update)
     {
         //   Serial.println("Partial Update");

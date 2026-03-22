@@ -67,9 +67,11 @@ const int MENU_ITEM_BACK[] = {4 * MENU_ITEM_SIZE + 1, TOT_H - MENU_ITEM_SIZE - 1
 const int MENU_ITEM_FW[] = {5 * MENU_ITEM_SIZE + 1, TOT_H - MENU_ITEM_SIZE - 1, MENU_ITEM_SIZE - 2, MENU_ITEM_SIZE - 1};
 const int MENU_ITEM_UP[] = {TOT_W - 2 * MENU_ITEM_SIZE - 10, TOT_H - MENU_ITEM_SIZE - 1, MENU_ITEM_SIZE - 2, MENU_ITEM_SIZE - 1};
 const int MENU_ITEM_DOWN[] = {TOT_W - MENU_ITEM_SIZE - 10, TOT_H - MENU_ITEM_SIZE - 1, MENU_ITEM_SIZE - 2, MENU_ITEM_SIZE - 1};
+const int MENU_ITEM_SHOW_FINISHED[] = {TOT_W - MENU_ITEM_SIZE - 10, TOT_H - MENU_ITEM_SIZE - 1, MENU_ITEM_SIZE - 2, MENU_ITEM_SIZE - 1};
 // const int MENU_ITEM_RELOAD[] = {6*MENU_ITEM_SIZE,TOT_H-MENU_ITEM_SIZE,MENU_ITEM_SIZE-1,MENU_ITEM_SIZE};
 
 const String MENU_ITEM_ICON[] = {"home_ic_icon", "brightness_ic_settings_icon", "start_ic_icon", "backward_ic_icon", "forward_ic_icon", "arrow_ic_up_icon", "arrow_ic_down_icon"};
+const String MENU_ITEM_SHOW_FINISHED_ICON = "eye_icon";
 
 #define LIST_SCROLLBAR_WIDTH 20
 #define LIST_ARROW_SIZE 30

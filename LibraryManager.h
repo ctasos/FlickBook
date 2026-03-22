@@ -14,6 +14,8 @@ public:
     bool loadBookUserData();
     StaticJsonDocument<4096> fetchBookUserData(String book);
     std::vector<String> getLibrary();
+    bool getShowFinishedBooks();
+    void setShowFinishedBooks(bool showFinishedBooks);
     bool saveBookUserData();
     bool initBookUserData();
     String getCurrentBook();
@@ -44,5 +46,6 @@ private:
     String currentPagePath;
     StaticJsonDocument<4096> userData;
     std::vector<String> library;
+    bool showFinishedBooks;
 };
 #endif

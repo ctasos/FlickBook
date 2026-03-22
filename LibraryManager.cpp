@@ -3,7 +3,7 @@
 // #include <SD.h>
 extern SDHandler sdHandler;
 extern EpubParser epubParser;
-LibraryManager::LibraryManager() : currentBook(""), currentPageString(""), currentPagePath("") {}
+LibraryManager::LibraryManager() : currentBook(""), currentPageString(""), currentPagePath(""), showFinishedBooks(false) {}
 
 void LibraryManager::init()
 {
@@ -82,7 +82,32 @@ StaticJsonDocument<4096> LibraryManager::fetchBookUserData(String book)
 
 std::vector<String> LibraryManager::getLibrary()
 {
+  if (!showFinishedBooks)
+  {
+    std::vector<String> filteredLibrary;
+    for (const String &book : library)
+    {
+      StaticJsonDocument<4096> tempUserData = fetchBookUserData(book);
+      bool isFinished = bool(tempUserData["isFinished"].as<int>());
+      if (!isFinished)
+      {
+        filteredLibrary.push_back(book);
+      }
+    }
+    return filteredLibrary;
+  }
+
   return library;
+}
+
+bool LibraryManager::getShowFinishedBooks()
+{
+  return showFinishedBooks;
+}
+
+void LibraryManager::setShowFinishedBooks(bool showFinishedBooks)
+{
+  this->showFinishedBooks = showFinishedBooks;
 }
 
 String LibraryManager::getCurrentBook()

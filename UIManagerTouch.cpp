@@ -376,6 +376,18 @@ bool UIManager::handleTouchMenu(uint16_t x, uint16_t y, uint8_t touch_type)
             return true;
         }
     }
+    else if ((currentScreen == MAIN_SCREEN) and (x >= MENU_ITEM_SHOW_FINISHED[0]) and (y >= MENU_ITEM_SHOW_FINISHED[1]) and (x <= (MENU_ITEM_SHOW_FINISHED[0] + MENU_ITEM_SIZE)) and (y <= (MENU_ITEM_SHOW_FINISHED[1] + MENU_ITEM_SIZE)))
+    {
+        if (touch_type == TOUCH_TYPE_SHORT)
+        {
+            Serial.println("Touched Menu Item: SHOW_FINISHED");
+            libraryManager.setShowFinishedBooks(!libraryManager.getShowFinishedBooks());
+            scrollIndex = 0;
+            renderScreen(MAIN_SCREEN, true, true);
+            flushTS(50);
+            return true;
+        }
+    }
     else if ((currentScreen == READING_SCREEN) and (x >= MENU_ITEM_BACK[0]) and (y >= MENU_ITEM_BACK[1]) and (x <= (MENU_ITEM_BACK[0] + MENU_ITEM_SIZE)) and (y <= (MENU_ITEM_BACK[1] + MENU_ITEM_SIZE)))
     {
         if (touch_type == TOUCH_TYPE_SHORT)
