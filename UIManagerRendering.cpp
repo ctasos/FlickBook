@@ -1,8 +1,10 @@
 #include "UIManager.h"
+#include "WebServerManager.h"
 
 extern SettingsManager settingsManager;
 extern SDHandler sdHandler;
 extern LibraryManager libraryManager;
+extern WebServerManager webServerManager;
 
 void UIManager::renderMenu(bool partial_update)
 {
@@ -246,6 +248,11 @@ void UIManager::renderSettings(bool partial_update)
     if (settingsManager.getWebserver())
     {
         drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+        // Show connection info below the toggle
+        setFont(FONT_PRIM, FONT_SIZE_SMALL);
+        display->setCursor(SETTINGS_ITEM_3[0], SETTINGS_ITEM_3[1] + FONT_SIZE_DEFAULT_PX + SETTINGS_ITEM_SUBTITLE_Y);
+        display->print("SSID: FlickBook  IP: " + webServerManager.getAPIP());
+        setFont(FONT_PRIM, FONT_SIZE_DEFAULT);
     }
     else
     {

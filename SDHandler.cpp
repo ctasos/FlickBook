@@ -603,3 +603,124 @@ void SDHandler::getPixelColor(SdFile &file, int x, int y, int imageWidth, uint8_
 //     outputFile.close();
 //     return true;
 // }
+
+std::vector<FileEntry> SDHandler::listFilesWithMeta(const String &path)
+{
+    std::vector<FileEntry> entries;
+    SdFile dir;
+    if (!dir.open(path.c_str(), O_RDONLY))
+    {
+        Serial.println("Failed to open directory: " + path);
+        return entries;
+    }
+
+    SdFile file;
+    while (file.openNext(&dir, O_RDONLY))
+    {
+        FileEntry entry;
+        char fileName[150];
+        file.getName(fileName, sizeof(fileName));
+        entry.name = String(fileName);
+        entry.isDir = file.isDir();
+        entry.size = file.isDir() ? 0 : file.fileSize();
+        entries.push_back(entry);
+        file.close();
+    }
+    dir.close();
+    return entries;
+}
+
+bool SDHandler::deletePath(const String &path)
+{
+    SdFile file;
+    if (!file.open(path.c_str(), O_RDONLY))
+    {
+        Serial.println("deletePath: path not found: " + path);
+        return false;
+    }
+
+    if (file.isDir())
+    {
+        file.close();
+        // Recursively delete contents first
+        SdFile dir;
+        if (!dir.open(path.c_str(), O_RDONLY))
+            return false;
+
+        SdFile child;
+        while (child.openNext(&dir, O_RDONLY))
+        {
+            char childName[150];
+            child.getName(childName, sizeof(childName));
+            bool isDir = child.isDir();
+            child.close();
+
+            String childPath = path + "/" + String(childName);
+            if (isDir)
+            {
+                if (!deletePath(childPath))
+                {
+                    dir.close();
+                    return false;
+                }
+            }
+            else
+            {
+                SdFile toRemove;
+                if (toRemove.open(childPath.c_str(), O_WRITE))
+                {
+                    toRemove.remove();
+                }
+            }
+        }
+        dir.close();
+
+        // Now remove the empty directory
+        SdFile emptyDir;
+        if (emptyDir.open(path.c_str(), O_RDONLY))
+        {
+            emptyDir.rmdir();
+        }
+        return true;
+    }
+    else
+    {
+        file.close();
+        SdFile toRemove;
+        if (toRemove.open(path.c_str(), O_WRITE))
+        {
+            return toRemove.remove();
+        }
+        return false;
+    }
+}
+
+bool SDHandler::renamePath(const String &oldPath, const String &newPath)
+{
+    SdFile file;
+    if (!file.open(oldPath.c_str(), O_RDONLY))
+    {
+        Serial.println("renamePath: source not found: " + oldPath);
+        return false;
+    }
+    bool result = file.rename(newPath.c_str());
+    file.close();
+    return result;
+}
+
+bool SDHandler::openFileForRead(const String &path, SdFile &file)
+{
+    return file.open(path.c_str(), O_RDONLY);
+}
+
+uint32_t SDHandler::getFileSize(const String &path)
+{
+    SdFile file;
+    if (!file.open(path.c_str(), O_RDONLY))
+    {
+        return 0;
+    }
+    uint32_t size = file.fileSize();
+    file.close();
+    return size;
+}

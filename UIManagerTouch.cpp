@@ -1,10 +1,12 @@
 #include "UIManager.h"
 #include "EpubParser.h"
+#include "WebServerManager.h"
 
 extern EpubParser epubParser;
 extern SettingsManager settingsManager;
 extern SDHandler sdHandler;
 extern LibraryManager libraryManager;
+extern WebServerManager webServerManager;
 
 void UIManager::handleTouch()
 {
@@ -642,6 +644,14 @@ bool UIManager::handleTouchSettingsPage(uint16_t x, uint16_t y, uint8_t touch_ty
             {
                 Serial.println("Touched Settings Item WebServer: Short Touch");
                 settingsManager.setWebserver(!settingsManager.getWebserver());
+                if (settingsManager.getWebserver())
+                {
+                    webServerManager.start();
+                }
+                else
+                {
+                    webServerManager.stop();
+                }
                 renderScreen(SETTINGS_SCREEN, true, true);
                 flushTS(50);
                 return true;

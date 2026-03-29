@@ -5,6 +5,7 @@
 #include "LibraryManager.h"
 #include "SDHandler.h"
 #include "SettingsManager.h"
+#include "WebServerManager.h"
 
 #if GRAYSCALE == 1
 Inkplate display(INKPLATE_3BIT);
@@ -17,6 +18,7 @@ SettingsManager settingsManager(&display);
 UIManager uiManager(&display, GRAYSCALE);
 SDHandler sdHandler(&display);
 EpubParser epubParser;
+WebServerManager webServerManager(&display);
 // SdFat sd;
 
 void setup()
@@ -28,10 +30,15 @@ void setup()
     settingsManager.init();
     uiManager.renderLoadingMsg("Starting...");
     libraryManager.init();
+    if (settingsManager.getWebserver())
+    {
+        webServerManager.start();
+    }
     uiManager.init();
 }
 
 void loop()
 {
     uiManager.handleTouch();
+    webServerManager.handleClient();
 }

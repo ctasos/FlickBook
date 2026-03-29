@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlickBook File Manager</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;color:#333;padding:16px;max-width:900px;margin:0 auto}
+h1{font-size:1.4em;margin-bottom:12px;color:#222}
+.breadcrumb{background:#fff;padding:10px 14px;border-radius:6px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.1);font-size:.9em;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.breadcrumb a{color:#2563eb;text-decoration:none;cursor:pointer}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{color:#666}
+.toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.toolbar button,.toolbar label{background:#2563eb;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:.85em;display:inline-flex;align-items:center;gap:4px}
+.toolbar button:hover,.toolbar label:hover{background:#1d4ed8}
+.toolbar input[type=file]{display:none}
+#uploadProgress{display:none;margin-bottom:12px;background:#fff;padding:10px 14px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+#uploadProgress .bar{height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin-top:6px}
+#uploadProgress .bar-fill{height:100%;background:#2563eb;width:0%;transition:width .2s}
+.file-list{background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden}
+.file-row{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid #f0f0f0;gap:10px}
+.file-row:last-child{border-bottom:none}
+.file-row:hover{background:#f9fafb}
+.file-icon{font-size:1.2em;width:24px;text-align:center;flex-shrink:0}
+.file-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.file-name.dir{color:#2563eb;font-weight:500}
+.file-name.dir:hover{text-decoration:underline}
+.file-size{color:#888;font-size:.85em;width:70px;text-align:right;flex-shrink:0}
+.file-actions{display:flex;gap:4px;flex-shrink:0}
+.file-actions button{background:none;border:1px solid #ddd;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:.8em;color:#555}
+.file-actions button:hover{background:#f0f0f0;border-color:#bbb}
+.file-actions button.del:hover{background:#fee2e2;border-color:#fca5a5;color:#dc2626}
+.empty{padding:40px;text-align:center;color:#999}
+.error-msg{background:#fee2e2;color:#dc2626;padding:10px 14px;border-radius:6px;margin-bottom:12px;display:none}
+@media(max-width:600px){
+  .file-size{display:none}
+  .file-actions button span{display:none}
+  .file-actions button{padding:6px}
+  body{padding:10px}
+}
+</style>
+</head>
+<body>
+<h1>&#128214; FlickBook File Manager</h1>
+<div id="error" class="error-msg"></div>
+<div id="breadcrumb" class="breadcrumb"></div>
+<div class="toolbar">
+  <label>&#128228; Upload<input type="file" id="fileInput" multiple></label>
+  <button onclick="createFolder()">&#128193; New Folder</button>
+</div>
+<div id="uploadProgress"><span id="uploadText">Uploading...</span><div class="bar"><div class="bar-fill" id="uploadBar"></div></div></div>
+<div id="listing" class="file-list"></div>
+
+<script>
+let currentPath = '/';
+
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 5000);
+}
+
+function formatSize(bytes) {
+  if (bytes === 0) return '-';
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / 1048576).toFixed(1) + ' MB';
+}
+
+function updateBreadcrumb() {
+  const el = document.getElementById('breadcrumb');
+  const parts = currentPath.split('/').filter(p => p);
+  let html = '<a onclick="navigate(\'/\')">&#127968; Root</a>';
+  let path = '';
+  for (const part of parts) {
+    path += '/' + part;
+    const p = path;
+    html += ' <span>/</span> <a onclick="navigate(\'' + p + '\')">' + escapeHtml(part) + '</a>';
+  }
+  el.innerHTML = html;
+}
+
+function escapeHtml(text) {
+  const d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+async function fetchListing(path) {
+  currentPath = path || '/';
+  updateBreadcrumb();
+  const listing = document.getElementById('listing');
+  listing.innerHTML = '<div class="empty">Loading...</div>';
+
+  try {
+    const res = await fetch('/api/list?path=' + encodeURIComponent(currentPath));
+    if (!res.ok) {
+      const err = await res.json();
+      showError(err.error || 'Failed to list directory');
+      listing.innerHTML = '<div class="empty">Error loading directory</div>';
+      return;
+    }
+    const entries = await res.json();
+
+    if (entries.length === 0) {
+      listing.innerHTML = '<div class="empty">Empty directory</div>';
+      return;
+    }
+
+    // Sort: directories first, then alphabetically
+    entries.sort((a, b) => {
+      if (a.isDir !== b.isDir) return a.isDir ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    let html = '';
+    for (const entry of entries) {
+      const fullPath = (currentPath === '/' ? '/' : currentPath + '/') + entry.name;
+      const icon = entry.isDir ? '&#128193;' : '&#128196;';
+      const nameClass = entry.isDir ? 'file-name dir' : 'file-name';
+      const nameClick = entry.isDir
+        ? ' onclick="navigate(\'' + escapeAttr(fullPath) + '\')"'
+        : '';
+
+      html += '<div class="file-row">';
+      html += '<div class="file-icon">' + icon + '</div>';
+      html += '<div class="' + nameClass + '"' + nameClick + '>' + escapeHtml(entry.name) + '</div>';
+      html += '<div class="file-size">' + formatSize(entry.size) + '</div>';
+      html += '<div class="file-actions">';
+      if (!entry.isDir) {
+        html += '<button onclick="downloadFile(\'' + escapeAttr(fullPath) + '\')"><span>Download</span> &#11015;</button>';
+      }
+      html += '<button onclick="renameEntry(\'' + escapeAttr(fullPath) + '\', \'' + escapeAttr(entry.name) + '\')"><span>Rename</span> &#9998;</button>';
+      html += '<button class="del" onclick="deleteEntry(\'' + escapeAttr(fullPath) + '\', ' + entry.isDir + ')"><span>Delete</span> &#128465;</button>';
+      html += '</div></div>';
+    }
+    listing.innerHTML = html;
+  } catch (e) {
+    showError('Connection error: ' + e.message);
+    listing.innerHTML = '<div class="empty">Connection error</div>';
+  }
+}
+
+function escapeAttr(s) {
+  return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+function navigate(path) {
+  fetchListing(path);
+}
+
+function downloadFile(path) {
+  window.location.href = '/api/download?path=' + encodeURIComponent(path);
+}
+
+async function deleteEntry(path, isDir) {
+  const msg = isDir
+    ? 'Delete folder and ALL its contents?\n\n' + path
+    : 'Delete file?\n\n' + path;
+  if (!confirm(msg)) return;
+
+  try {
+    const res = await fetch('/api/delete?path=' + encodeURIComponent(path), { method: 'DELETE' });
+    if (!res.ok) {
+      const err = await res.json();
+      showError(err.error || 'Delete failed');
+      return;
+    }
+    fetchListing(currentPath);
+  } catch (e) {
+    showError('Connection error: ' + e.message);
+  }
+}
+
+async function createFolder() {
+  const name = prompt('New folder name:');
+  if (!name || !name.trim()) return;
+
+  const path = (currentPath === '/' ? '/' : currentPath + '/') + name.trim();
+  try {
+    const res = await fetch('/api/mkdir?path=' + encodeURIComponent(path), { method: 'POST' });
+    if (!res.ok) {
+      const err = await res.json();
+      showError(err.error || 'Failed to create folder');
+      return;
+    }
+    fetchListing(currentPath);
+  } catch (e) {
+    showError('Connection error: ' + e.message);
+  }
+}
+
+async function renameEntry(path, oldName) {
+  const newName = prompt('Rename to:', oldName);
+  if (!newName || !newName.trim() || newName.trim() === oldName) return;
+
+  try {
+    const res = await fetch('/api/rename?path=' + encodeURIComponent(path) + '&newname=' + encodeURIComponent(newName.trim()), { method: 'POST' });
+    if (!res.ok) {
+      const err = await res.json();
+      showError(err.error || 'Rename failed');
+      return;
+    }
+    fetchListing(currentPath);
+  } catch (e) {
+    showError('Connection error: ' + e.message);
+  }
+}
+
+document.getElementById('fileInput').addEventListener('change', async function() {
+  const files = this.files;
+  if (!files.length) return;
+
+  const progress = document.getElementById('uploadProgress');
+  const bar = document.getElementById('uploadBar');
+  const text = document.getElementById('uploadText');
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    progress.style.display = 'block';
+    text.textContent = 'Uploading ' + file.name + ' (' + (i + 1) + '/' + files.length + ')...';
+    bar.style.width = '0%';
+
+    try {
+      const xhr = new XMLHttpRequest();
+      await new Promise((resolve, reject) => {
+        xhr.upload.onprogress = function(e) {
+          if (e.lengthComputable) {
+            bar.style.width = Math.round(e.loaded / e.total * 100) + '%';
+          }
+        };
+        xhr.onload = function() {
+          if (xhr.status === 200) resolve();
+          else reject(new Error(xhr.responseText));
+        };
+        xhr.onerror = function() { reject(new Error('Upload failed')); };
+        xhr.open('POST', '/api/upload?path=' + encodeURIComponent(currentPath));
+        xhr.send(formData);
+      });
+    } catch (e) {
+      showError('Upload error: ' + e.message);
+    }
+  }
+
+  progress.style.display = 'none';
+  this.value = '';
+  fetchListing(currentPath);
+});
+
+// Load root on page load
+fetchListing('/');
+</script>
+</body>
+</html>
