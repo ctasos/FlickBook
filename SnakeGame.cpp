@@ -3,8 +3,10 @@
 SnakeGame::SnakeGame(Inkplate *disp, std::function<void()> exitCallback)
     : display(disp), exitGame(exitCallback), cellSize(24), dir(RIGHT), lastMove(0), speed(0) {}
 
-void SnakeGame::begin()
+void SnakeGame::begin(int fg, int bg)
 {
+  fgColor = fg;
+  bgColor = bg;
   display->clearDisplay();
   display->setFullUpdateThreshold(0);
   display->partialUpdate(true);
@@ -57,13 +59,13 @@ void SnakeGame::drawCell(int gx, int gy, bool fill)
 {
   int x = 2 + gx * cellSize;
   int y = 2 + gy * cellSize;
-  display->fillRect(x, y, cellSize, cellSize, fill ? BLACK : WHITE);
+  display->fillRect(x, y, cellSize, cellSize, fill ? fgColor : bgColor);
 }
 
 void SnakeGame::drawBorder()
 {
   int height = gridH * cellSize + 4;
-  display->drawRect(0, 0, display->width(), height, BLACK);
+  display->drawRect(0, 0, display->width(), height, fgColor);
 }
 
 void SnakeGame::drawControls()
@@ -73,23 +75,23 @@ void SnakeGame::drawControls()
   int controlCenterX = 4 * display->width() / 5;
   int controlCenterY = display->height() - sz * 1.5 - margin;
 
-  display->fillRect(0, display->height() - sz * 3 - margin * 2, display->width(), sz * 3 + margin * 2, WHITE);
+  display->fillRect(0, display->height() - sz * 3 - margin * 2, display->width(), sz * 3 + margin * 2, bgColor);
 
   display->fillTriangle(controlCenterX, controlCenterY - sz,
                         controlCenterX - sz / 2, controlCenterY - sz / 2,
-                        controlCenterX + sz / 2, controlCenterY - sz / 2, BLACK);
+                        controlCenterX + sz / 2, controlCenterY - sz / 2, fgColor);
 
   display->fillTriangle(controlCenterX, controlCenterY + sz,
                         controlCenterX - sz / 2, controlCenterY + sz / 2,
-                        controlCenterX + sz / 2, controlCenterY + sz / 2, BLACK);
+                        controlCenterX + sz / 2, controlCenterY + sz / 2, fgColor);
 
   display->fillTriangle(controlCenterX - sz, controlCenterY,
                         controlCenterX - sz / 2, controlCenterY - sz / 2,
-                        controlCenterX - sz / 2, controlCenterY + sz / 2, BLACK);
+                        controlCenterX - sz / 2, controlCenterY + sz / 2, fgColor);
 
   display->fillTriangle(controlCenterX + sz, controlCenterY,
                         controlCenterX + sz / 2, controlCenterY - sz / 2,
-                        controlCenterX + sz / 2, controlCenterY + sz / 2, BLACK);
+                        controlCenterX + sz / 2, controlCenterY + sz / 2, fgColor);
 }
 
 void SnakeGame::update()

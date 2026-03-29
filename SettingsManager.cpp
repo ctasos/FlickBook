@@ -1,7 +1,7 @@
 #include "SettingsManager.h"
 extern SDHandler sdHandler;
 
-SettingsManager::SettingsManager(Inkplate *display) : display(display), /*fontSize(4),*/ backlight(0), gestures(true), webserver(false) {}
+SettingsManager::SettingsManager(Inkplate *display) : display(display), /*fontSize(4),*/ backlight(0), gestures(true), webserver(false), darkMode(false) {}
 
 void SettingsManager::init()
 {
@@ -36,7 +36,8 @@ void SettingsManager::loadSettings()
     gestures = bool(doc["gestures"].as<int>());
     backlight = doc["backlight"].as<int>();
     webserver = bool(doc["webserver"].as<int>());
-    Serial.printf("Loaded gestures:%d, backlight:%d, webserver:%d\n", gestures, backlight, webserver);
+    darkMode = bool(doc["darkMode"].as<int>());
+    Serial.printf("Loaded gestures:%d, backlight:%d, webserver:%d, darkMode:%d\n", gestures, backlight, webserver, darkMode);
     //     settingsFile.close();
   }
 }
@@ -44,8 +45,8 @@ void SettingsManager::loadSettings()
 void SettingsManager::saveSettings()
 {
 
-  String keys[] = {"gestures", "backlight", "webserver"};
-  String values[] = {String(gestures), String(backlight), String(webserver)};
+  String keys[] = {"gestures", "backlight", "webserver", "darkMode"};
+  String values[] = {String(gestures), String(backlight), String(webserver), String(darkMode)};
 
   sdHandler.saveJson(settings_file, keys, values, NUMITEMS(keys));
 }
@@ -74,6 +75,27 @@ void SettingsManager::setWebserver(bool val)
 {
   webserver = val;
   saveSettings();
+}
+
+bool SettingsManager::getDarkMode()
+{
+  return darkMode;
+}
+
+void SettingsManager::setDarkMode(bool val)
+{
+  darkMode = val;
+  saveSettings();
+}
+
+int SettingsManager::getFgColor()
+{
+  return darkMode ? WHITE : BLACK;
+}
+
+int SettingsManager::getBgColor()
+{
+  return darkMode ? BLACK : WHITE;
 }
 
 int SettingsManager::getBacklight()

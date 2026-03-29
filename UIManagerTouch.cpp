@@ -613,7 +613,7 @@ bool UIManager::handleTouchMainHeader(uint16_t x, uint16_t y, uint8_t touch_type
             {
                 Serial.println("Touched Header Item Settings: Long Touch");
                 inSnakeMode = true;
-                snakeGame->begin();
+                snakeGame->begin(settingsManager.getFgColor(), settingsManager.getBgColor());
                 return true;
             }
         }
@@ -643,6 +643,17 @@ bool UIManager::handleTouchSettingsPage(uint16_t x, uint16_t y, uint8_t touch_ty
                 Serial.println("Touched Settings Item WebServer: Short Touch");
                 settingsManager.setWebserver(!settingsManager.getWebserver());
                 renderScreen(SETTINGS_SCREEN, true, true);
+                flushTS(50);
+                return true;
+            }
+        }
+        else if ((x >= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70)) and (y >= (SETTINGS_ITEM_4[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2)) and (x <= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70 + SETTINGS_ITEM_STATUS_ICON_SIZE)) and (y <= (SETTINGS_ITEM_4[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2 + SETTINGS_ITEM_STATUS_ICON_SIZE)))
+        {
+            if (touch_type == TOUCH_TYPE_SHORT)
+            {
+                Serial.println("Touched Settings Item DarkMode: Short Touch");
+                settingsManager.setDarkMode(!settingsManager.getDarkMode());
+                renderScreen(SETTINGS_SCREEN, false, true);
                 flushTS(50);
                 return true;
             }

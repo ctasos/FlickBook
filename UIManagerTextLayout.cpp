@@ -4,6 +4,7 @@
 extern EpubParser epubParser;
 extern SDHandler sdHandler;
 extern LibraryManager libraryManager;
+extern SettingsManager settingsManager;
 
 void UIManager::processTextBlock(
     const String &text, int startX, int startY, int width, int height,
@@ -190,7 +191,7 @@ TextRenderResult UIManager::renderTextBlockSection(
 
     int currentPage = 0;
     bool done = false;
-    display->setTextColor(BLACK);
+    display->setTextColor(settingsManager.getFgColor());
     bool printing = false;
 
     String printedText = "";

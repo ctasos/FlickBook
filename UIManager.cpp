@@ -1,6 +1,7 @@
 #include "UIManager.h"
 
 extern LibraryManager libraryManager;
+extern SettingsManager settingsManager;
 
 extern const GFXfont FreeSerif12pt7b;
 extern const GFXfont FreeSerif18pt7b;
@@ -128,7 +129,8 @@ void UIManager::renderScreen(uint8_t s, bool partial_update, bool force)
   // Serial.printf("Free heap: %d\n", ESP.getFreeHeap());
   previousScreen = currentScreen;
   currentScreen = s;
-  display->clearDisplay();
+
+  clearDisplay();
 
   switch (currentScreen)
   {
@@ -221,5 +223,21 @@ void UIManager::flushTS(uint8_t d)
     Serial.println("Flushing touchscreen...");
     display->tsGetData(x, y);
     delay(d);
+  }
+}
+
+void UIManager::clearDisplay()
+{
+  if (settingsManager.getDarkMode())
+  {
+    // Fill framebuffer with black directly via memset (much faster than fillRect)
+    if (display->getDisplayMode() == 0)
+      memset(display->_partial, 0xFF, TOT_W * TOT_H / 8);
+    else
+      memset(display->DMemory4Bit, 0, TOT_W * TOT_H / 2);
+  }
+  else
+  {
+    display->clearDisplay();
   }
 }

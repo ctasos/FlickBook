@@ -8,6 +8,7 @@ void UIManager::renderMenu(bool partial_update)
 {
 
     display->fillRoundRect(MENU_ITEM_HOME[0], MENU_ITEM_HOME[1], MENU_ITEM_HOME[2], MENU_ITEM_HOME[3], MENU_ITEM_RADIUS, BLACK); // Arguments are: start X, start Y, size X, size Y, radius, color
+    display->drawRoundRect(MENU_ITEM_HOME[0], MENU_ITEM_HOME[1], MENU_ITEM_HOME[2], MENU_ITEM_HOME[3], MENU_ITEM_RADIUS, WHITE); // Arguments are: start X, start Y, size X, size Y, radius, color
     drawIcon(MENU_ITEM_ICON[0], MENU_ITEM_HOME[0] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, MENU_ITEM_HOME[1] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, true);
 
     if (GRAYSCALE)
@@ -18,13 +19,14 @@ void UIManager::renderMenu(bool partial_update)
     else
     {
         display->fillRoundRect(MENU_ITEM_BACKLIGHT[0], MENU_ITEM_BACKLIGHT[1], MENU_ITEM_BACKLIGHT[2], MENU_ITEM_BACKLIGHT[3], MENU_ITEM_RADIUS, BLACK); // Arguments are: start X, start Y, size X, size Y, radius, color
+        display->drawRoundRect(MENU_ITEM_BACKLIGHT[0], MENU_ITEM_BACKLIGHT[1], MENU_ITEM_BACKLIGHT[2], MENU_ITEM_BACKLIGHT[3], MENU_ITEM_RADIUS, WHITE); // Arguments are: start X, start Y, size X, size Y, radius, color
         if (settingsManager.getBacklight() > 0)
         {
-            display->fillRoundRect(MENU_ITEM_BACKLIGHT[0] + 5, MENU_ITEM_BACKLIGHT[1] + MENU_ITEM_BACKLIGHT[3] - int(MENU_ITEM_BACKLIGHT[3] * settingsManager.getBacklight() / BACKLIGHT_L5), MENU_ITEM_BACKLIGHT[2] / 8, int(MENU_ITEM_BACKLIGHT[3] * settingsManager.getBacklight() / BACKLIGHT_L5), MENU_ITEM_RADIUS, WHITE);
+            display->fillRoundRect(MENU_ITEM_BACKLIGHT[0] + 5, MENU_ITEM_BACKLIGHT[1] + MENU_ITEM_BACKLIGHT[3] - 3 - int((MENU_ITEM_BACKLIGHT[3] - 5) * settingsManager.getBacklight() / BACKLIGHT_L5), MENU_ITEM_BACKLIGHT[2] / 8, int((MENU_ITEM_BACKLIGHT[3] - 5) * settingsManager.getBacklight() / BACKLIGHT_L5), MENU_ITEM_RADIUS, WHITE);
         }
         else
         {
-            display->fillRoundRect(MENU_ITEM_BACKLIGHT[0], MENU_ITEM_BACKLIGHT[1] + 1, MENU_ITEM_BACKLIGHT[2] / 4, MENU_ITEM_BACKLIGHT[3] - 2, MENU_ITEM_RADIUS, BLACK);
+            display->fillRoundRect(MENU_ITEM_BACKLIGHT[0] + 5, MENU_ITEM_BACKLIGHT[1] + 3, MENU_ITEM_BACKLIGHT[2] / 8, MENU_ITEM_BACKLIGHT[3] - 6, MENU_ITEM_RADIUS, BLACK);
         }
         drawIcon(MENU_ITEM_ICON[1], MENU_ITEM_BACKLIGHT[0] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, MENU_ITEM_BACKLIGHT[1] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, true);
     }
@@ -32,18 +34,23 @@ void UIManager::renderMenu(bool partial_update)
     if (currentScreen == READING_SCREEN)
     {
         display->fillRoundRect(MENU_ITEM_START[0], MENU_ITEM_START[1], MENU_ITEM_START[2], MENU_ITEM_START[3], MENU_ITEM_RADIUS, BLACK); // Arguments are: start X, start Y, size X, size Y, radius, color
+        display->drawRoundRect(MENU_ITEM_START[0], MENU_ITEM_START[1], MENU_ITEM_START[2], MENU_ITEM_START[3], MENU_ITEM_RADIUS, WHITE); // Arguments are: start X, start Y, size X, size Y, radius, color
         drawIcon(MENU_ITEM_ICON[2], MENU_ITEM_START[0] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, MENU_ITEM_START[1] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, true);
 
         display->fillRoundRect(MENU_ITEM_BACK[0], MENU_ITEM_BACK[1], MENU_ITEM_BACK[2], MENU_ITEM_BACK[3], MENU_ITEM_RADIUS, BLACK); // Arguments are: start X, start Y, size X, size Y, radius, color
+        display->drawRoundRect(MENU_ITEM_BACK[0], MENU_ITEM_BACK[1], MENU_ITEM_BACK[2], MENU_ITEM_BACK[3], MENU_ITEM_RADIUS, WHITE); // Arguments are: start X, start Y, size X, size Y, radius, color
         drawIcon(MENU_ITEM_ICON[3], MENU_ITEM_BACK[0] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, MENU_ITEM_BACK[1] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, true);
 
         display->fillRoundRect(MENU_ITEM_FW[0], MENU_ITEM_FW[1], MENU_ITEM_FW[2], MENU_ITEM_FW[3], MENU_ITEM_RADIUS, BLACK); // Arguments are: start X, start Y, size X, size Y, radius, color
+        display->drawRoundRect(MENU_ITEM_FW[0], MENU_ITEM_FW[1], MENU_ITEM_FW[2], MENU_ITEM_FW[3], MENU_ITEM_RADIUS, WHITE); // Arguments are: start X, start Y, size X, size Y, radius, color
         drawIcon(MENU_ITEM_ICON[4], MENU_ITEM_FW[0] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, MENU_ITEM_FW[1] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, true);
 
         display->fillRoundRect(MENU_ITEM_UP[0], MENU_ITEM_UP[1], MENU_ITEM_UP[2], MENU_ITEM_UP[3], MENU_ITEM_RADIUS, BLACK); // Arguments are: start X, start Y, size X, size Y, radius, color
+        display->drawRoundRect(MENU_ITEM_UP[0], MENU_ITEM_UP[1], MENU_ITEM_UP[2], MENU_ITEM_UP[3], MENU_ITEM_RADIUS, WHITE); // Arguments are: start X, start Y, size X, size Y, radius, color
         drawIcon(MENU_ITEM_ICON[5], MENU_ITEM_UP[0] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, MENU_ITEM_UP[1] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, true);
 
         display->fillRoundRect(MENU_ITEM_DOWN[0], MENU_ITEM_DOWN[1], MENU_ITEM_DOWN[2], MENU_ITEM_DOWN[3], MENU_ITEM_RADIUS, BLACK); // Arguments are: start X, start Y, size X, size Y, radius, color
+        display->drawRoundRect(MENU_ITEM_DOWN[0], MENU_ITEM_DOWN[1], MENU_ITEM_DOWN[2], MENU_ITEM_DOWN[3], MENU_ITEM_RADIUS, WHITE); // Arguments are: start X, start Y, size X, size Y, radius, color
         drawIcon(MENU_ITEM_ICON[6], MENU_ITEM_DOWN[0] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, MENU_ITEM_DOWN[1] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2, true);
     }
     else if (currentScreen == MAIN_SCREEN)
@@ -51,17 +58,19 @@ void UIManager::renderMenu(bool partial_update)
         bool showFinishedBooks = libraryManager.getShowFinishedBooks();
         if (showFinishedBooks)
         {
-            display->fillRoundRect(MENU_ITEM_SHOW_FINISHED[0], MENU_ITEM_SHOW_FINISHED[1], MENU_ITEM_SHOW_FINISHED[2], MENU_ITEM_SHOW_FINISHED[3], MENU_ITEM_RADIUS, BLACK);
+            display->fillRoundRect(MENU_ITEM_SHOW_FINISHED[0], MENU_ITEM_SHOW_FINISHED[1], MENU_ITEM_SHOW_FINISHED[2], MENU_ITEM_SHOW_FINISHED[3], MENU_ITEM_RADIUS, WHITE);
+            display->drawRoundRect(MENU_ITEM_SHOW_FINISHED[0], MENU_ITEM_SHOW_FINISHED[1], MENU_ITEM_SHOW_FINISHED[2], MENU_ITEM_SHOW_FINISHED[3], MENU_ITEM_RADIUS, BLACK);
         }
         else
         {
-            display->drawRoundRect(MENU_ITEM_SHOW_FINISHED[0], MENU_ITEM_SHOW_FINISHED[1], MENU_ITEM_SHOW_FINISHED[2], MENU_ITEM_SHOW_FINISHED[3], MENU_ITEM_RADIUS, BLACK);
+            display->fillRoundRect(MENU_ITEM_SHOW_FINISHED[0], MENU_ITEM_SHOW_FINISHED[1], MENU_ITEM_SHOW_FINISHED[2], MENU_ITEM_SHOW_FINISHED[3], MENU_ITEM_RADIUS, BLACK);
+            display->drawRoundRect(MENU_ITEM_SHOW_FINISHED[0], MENU_ITEM_SHOW_FINISHED[1], MENU_ITEM_SHOW_FINISHED[2], MENU_ITEM_SHOW_FINISHED[3], MENU_ITEM_RADIUS, WHITE);
         }
 
         drawIcon(MENU_ITEM_SHOW_FINISHED_ICON,
                  MENU_ITEM_SHOW_FINISHED[0] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2,
                  MENU_ITEM_SHOW_FINISHED[1] + (MENU_ITEM_SIZE - MENU_ICON_SIZE) / 2,
-                 showFinishedBooks);
+                 !showFinishedBooks);
     }
     if (partial_update)
     {
@@ -131,7 +140,7 @@ void UIManager::renderBookList(bool partial_update)
     std::vector<String> bookList = libraryManager.getLibrary();
 
     setFont(FONT_PRIM, FONT_SIZE_LARGE);
-    display->setTextColor(BLACK);
+    display->setTextColor(settingsManager.getFgColor());
     display->setCursor(LIST_TITLE_X, LIST_TITLE_Y);
     display->print("MY LIBRARY:");
     int maxScroll = max(0, (int)bookList.size() - LIST_MAX_FILES);
@@ -140,7 +149,7 @@ void UIManager::renderBookList(bool partial_update)
     for (int i = 0; i < LIST_MAX_FILES && (scrollIndex + i) < bookList.size(); i++)
     {
         int y = LIST_START_Y + i * LIST_ITEM_HEIGHT;
-        display->drawRect(LIST_START_X, y, LIST_WIDTH, LIST_ITEM_HEIGHT, BLACK);
+        display->drawRect(LIST_START_X, y, LIST_WIDTH, LIST_ITEM_HEIGHT, settingsManager.getFgColor());
 
         // Get the file name and truncate if necessary
         String bookName = bookList[scrollIndex + i];
@@ -164,7 +173,7 @@ void UIManager::renderBookList(bool partial_update)
         display->print(author);
         if (isFinished)
         {
-            drawIcon(LIST_ICON_FINISHED, LIST_ICON_X, y + 4 * LIST_ITEM_HEIGHT / 5 - LIST_ICON_FINISHED_SIZE, false);
+            drawIcon(LIST_ICON_FINISHED, LIST_ICON_X, y + 4 * LIST_ITEM_HEIGHT / 5 - LIST_ICON_FINISHED_SIZE, settingsManager.getDarkMode());
         }
         setFont(FONT_ALT, FONT_SIZE_DEFAULT);
         display->setCursor(LIST_WIDTH - itemProgress.length() * 11, y + 4 * LIST_ITEM_HEIGHT / 5);
@@ -177,18 +186,18 @@ void UIManager::renderBookList(bool partial_update)
         int scrollbarAreaHeight = (TOT_H - LIST_START_Y - MENU_ITEM_SIZE - 2 * LIST_ARROW_SIZE); // Reserve space for arrows
         int scrollbarHeight = scrollbarAreaHeight * LIST_MAX_FILES / bookList.size();
         int scrollbarY = LIST_START_Y + (scrollbarAreaHeight - scrollbarHeight) * scrollIndex / maxScroll;
-        display->fillRect(TOT_W - 2 * LIST_SCROLLBAR_WIDTH - 4, scrollbarY, LIST_SCROLLBAR_WIDTH, scrollbarHeight, BLACK);
+        display->fillRect(TOT_W - 2 * LIST_SCROLLBAR_WIDTH - 4, scrollbarY, LIST_SCROLLBAR_WIDTH, scrollbarHeight, settingsManager.getFgColor());
 
         // Up arrow
         display->fillTriangle(LIST_UP_ARROW_DRAW[0][0], LIST_UP_ARROW_DRAW[0][1],
                               LIST_UP_ARROW_DRAW[1][0], LIST_UP_ARROW_DRAW[1][1],
-                              LIST_UP_ARROW_DRAW[2][0], LIST_UP_ARROW_DRAW[2][1], BLACK);
-        display->drawRoundRect(LIST_UP_ARROW_TOUCH[0], LIST_UP_ARROW_TOUCH[1], LIST_UP_ARROW_TOUCH[2], LIST_UP_ARROW_TOUCH[3], LIST_ARROW_RADIUS, BLACK);
+                              LIST_UP_ARROW_DRAW[2][0], LIST_UP_ARROW_DRAW[2][1], settingsManager.getFgColor());
+        display->drawRoundRect(LIST_UP_ARROW_TOUCH[0], LIST_UP_ARROW_TOUCH[1], LIST_UP_ARROW_TOUCH[2], LIST_UP_ARROW_TOUCH[3], LIST_ARROW_RADIUS, settingsManager.getFgColor());
         // Down arrow
         display->fillTriangle(LIST_DOWN_ARROW_DRAW[0][0], LIST_DOWN_ARROW_DRAW[0][1],
                               LIST_DOWN_ARROW_DRAW[1][0], LIST_DOWN_ARROW_DRAW[1][1],
-                              LIST_DOWN_ARROW_DRAW[2][0], LIST_DOWN_ARROW_DRAW[2][1], BLACK);
-        display->drawRoundRect(LIST_DOWN_ARROW_TOUCH[0], LIST_DOWN_ARROW_TOUCH[1], LIST_DOWN_ARROW_TOUCH[2], LIST_DOWN_ARROW_TOUCH[3], LIST_ARROW_RADIUS, BLACK);
+                              LIST_DOWN_ARROW_DRAW[2][0], LIST_DOWN_ARROW_DRAW[2][1], settingsManager.getFgColor());
+        display->drawRoundRect(LIST_DOWN_ARROW_TOUCH[0], LIST_DOWN_ARROW_TOUCH[1], LIST_DOWN_ARROW_TOUCH[2], LIST_DOWN_ARROW_TOUCH[3], LIST_ARROW_RADIUS, settingsManager.getFgColor());
     }
 
     if (partial_update)
@@ -203,44 +212,56 @@ void UIManager::renderBookList(bool partial_update)
 void UIManager::renderSettings(bool partial_update)
 {
 
-    display->setTextColor(BLACK);
+    display->setTextColor(settingsManager.getFgColor());
     setFont(FONT_ALT, FONT_SIZE_DEFAULT);
-    display->drawRect(SETTINGS_PAGE_X, SETTINGS_PAGE_Y, SETTINGS_PAGE_W, SETTINGS_PAGE_H, BLACK);
+    display->drawRect(SETTINGS_PAGE_X, SETTINGS_PAGE_Y, SETTINGS_PAGE_W, SETTINGS_PAGE_H, settingsManager.getFgColor());
 
-    display->fillRect(SETTINGS_TAB_1[0], SETTINGS_TAB_1[1], SETTINGS_TAB_1[2], SETTINGS_TAB_1[3], BLACK);
-    drawIcon(SETTINGS_TAB_ICON[0], SETTINGS_TAB_1[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_1[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, true);
-    display->drawRect(SETTINGS_TAB_2[0], SETTINGS_TAB_2[1], SETTINGS_TAB_2[2], SETTINGS_TAB_2[3], BLACK);
-    drawIcon(SETTINGS_TAB_ICON[1], SETTINGS_TAB_2[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_2[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2);
-    display->drawRect(SETTINGS_TAB_3[0], SETTINGS_TAB_3[1], SETTINGS_TAB_3[2], SETTINGS_TAB_3[3], BLACK);
-    drawIcon(SETTINGS_TAB_ICON[2], SETTINGS_TAB_3[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_3[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2);
+    display->fillRect(SETTINGS_TAB_1[0], SETTINGS_TAB_1[1], SETTINGS_TAB_1[2], SETTINGS_TAB_1[3], settingsManager.getFgColor());
+    drawIcon(SETTINGS_TAB_ICON[0], SETTINGS_TAB_1[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_1[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, !settingsManager.getDarkMode());
+    display->drawRect(SETTINGS_TAB_2[0], SETTINGS_TAB_2[1], SETTINGS_TAB_2[2], SETTINGS_TAB_2[3], settingsManager.getFgColor());
+    drawIcon(SETTINGS_TAB_ICON[1], SETTINGS_TAB_2[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_2[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, settingsManager.getDarkMode());
+    display->drawRect(SETTINGS_TAB_3[0], SETTINGS_TAB_3[1], SETTINGS_TAB_3[2], SETTINGS_TAB_3[3], settingsManager.getFgColor());
+    drawIcon(SETTINGS_TAB_ICON[2], SETTINGS_TAB_3[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_3[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, settingsManager.getDarkMode());
 
     display->setCursor(SETTINGS_ITEM_1[0], SETTINGS_ITEM_1[1]);
     display->print("Backlight");
     display->setCursor(SETTINGS_PAGE_X + SETTINGS_PAGE_W - 50, SETTINGS_ITEM_1[1]);
     display->print(settingsManager.getBacklight());
-    display->drawThickLine(SETTINGS_SEP_1[0], SETTINGS_SEP_1[1], SETTINGS_SEP_1[2], SETTINGS_SEP_1[3], BLACK, SETTINGS_SEP_1[4]);
+    display->drawThickLine(SETTINGS_SEP_1[0], SETTINGS_SEP_1[1], SETTINGS_SEP_1[2], SETTINGS_SEP_1[3], settingsManager.getFgColor(), SETTINGS_SEP_1[4]);
 
     display->setCursor(SETTINGS_ITEM_2[0], SETTINGS_ITEM_2[1]);
     display->print("Gestures");
     if (settingsManager.getGestures())
     {
-        drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2);
+        drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
     }
     else
     {
-        drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2);
+        drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
     }
-    display->drawThickLine(SETTINGS_SEP_2[0], SETTINGS_SEP_2[1], SETTINGS_SEP_2[2], SETTINGS_SEP_2[3], BLACK, SETTINGS_SEP_2[4]);
+    display->drawThickLine(SETTINGS_SEP_2[0], SETTINGS_SEP_2[1], SETTINGS_SEP_2[2], SETTINGS_SEP_2[3], settingsManager.getFgColor(), SETTINGS_SEP_2[4]);
 
     display->setCursor(SETTINGS_ITEM_3[0], SETTINGS_ITEM_3[1]);
     display->print("Webserver");
     if (settingsManager.getWebserver())
     {
-        drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2);
+        drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
     }
     else
     {
-        drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2);
+        drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+    }
+    display->drawThickLine(SETTINGS_SEP_3[0], SETTINGS_SEP_3[1], SETTINGS_SEP_3[2], SETTINGS_SEP_3[3], settingsManager.getFgColor(), SETTINGS_SEP_3[4]);
+
+    display->setCursor(SETTINGS_ITEM_4[0], SETTINGS_ITEM_4[1]);
+    display->print("Dark Mode");
+    if (settingsManager.getDarkMode())
+    {
+        drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_4[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+    }
+    else
+    {
+        drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_4[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
     }
 
     if (partial_update)
@@ -266,13 +287,15 @@ void UIManager::drawBattery(bool invert)
 void UIManager::renderLoadingMsg(const String &message, bool partial_update)
 {
 
+    clearDisplay();
+
     // Draw background box
-    display->fillRoundRect(LOADING_MSG_X, LOADING_MSG_Y, LOADING_MSG_W, LOADING_MSG_H, 10, WHITE);
-    display->drawRoundRect(LOADING_MSG_X, LOADING_MSG_Y, LOADING_MSG_W, LOADING_MSG_H, 10, BLACK);
+    display->fillRoundRect(LOADING_MSG_X, LOADING_MSG_Y, LOADING_MSG_W, LOADING_MSG_H, 10, settingsManager.getBgColor());
+    display->drawRoundRect(LOADING_MSG_X, LOADING_MSG_Y, LOADING_MSG_W, LOADING_MSG_H, 10, settingsManager.getFgColor());
 
     // Draw loading text
     setFont(FONT_ALT, FONT_SIZE_LARGE);
-    display->setTextColor(BLACK);
+    display->setTextColor(settingsManager.getFgColor());
     int textX = LOADING_MSG_X + (LOADING_MSG_W - message.length() * 14) / 2;
     int textY = LOADING_MSG_Y + LOADING_MSG_H / 1.5;
     display->setCursor(textX, textY);

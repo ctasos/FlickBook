@@ -24,9 +24,9 @@ void setup()
     Serial.begin(115200);
     display.begin();
     display.setRotation(1); // Portrait mode
-    uiManager.renderLoadingMsg("Starting...");
     sdHandler.init();
     settingsManager.init();
+    uiManager.renderLoadingMsg("Starting...");
     libraryManager.init();
     uiManager.init();
 }

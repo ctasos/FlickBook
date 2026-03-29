@@ -9,7 +9,7 @@ class SnakeGame
 {
 public:
   SnakeGame(Inkplate *display, std::function<void()> exitCallback);
-  void begin();
+  void begin(int fgColor, int bgColor);
   void update();
   void onTouch(uint16_t x, uint16_t y);
 
@@ -37,6 +37,8 @@ private:
   void drawBorder();
   void drawControls();
   bool moveSnake();
+  int fgColor;
+  int bgColor;
 };
 
 #endif

@@ -32,6 +32,10 @@ public:
     void setGestures(bool val);
     bool getWebserver();
     void setWebserver(bool val);
+    bool getDarkMode();
+    void setDarkMode(bool val);
+    int getFgColor();
+    int getBgColor();
 
 private:
     Inkplate *display;
@@ -39,6 +43,7 @@ private:
     int backlight;
     bool gestures;
     bool webserver;
+    bool darkMode;
     bool o[3] = {1, 1, 1};
 };
 #endif
