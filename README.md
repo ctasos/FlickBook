@@ -9,7 +9,7 @@ The goal of this project was to create a truly open and customizable eBook reade
 **Key motivations:**
 - Full control over your eBook collection without DRM restrictions
 - Native EPUB support without requiring conversion to other formats
-- Touch-based navigation with intuitive gestures
+- Touch-based navigation with intuitive touch gestures
 - Weeks of battery life through efficient e-paper technology
 - Expandable functionality through open-source codebase
 - Utilizing Arduino ESP32 Library
@@ -24,9 +24,11 @@ The project leverages the InkPlate 6 Flick's excellent recycled e-paper displays
 - **Full gesture navigation** - Swipe left/right for pages, up/down for chapters
 - **Complete library management** - Browse, select, and organize your book collection
 - **SD card storage** - Load books via microSD card for massive storage capacity
+- **WiFi connectivity** - Over-the-air library management and book upload
 - **Adjustable backlight** - 64 levels of brightness control for any lighting condition
-- **Progress tracking** - Automatically saves your reading position
-- **Multiple font options** - Choose from serif, sans-serif fonts in various sizes (only adjustable from code currently)
+- **Progress tracking** - Automatically saves and tracks your reading position
+- **Multiple font options** - Choose from serif, sans-serif, bookerly, ember fonts in various sizes (only adjustable from code currently)
+- **Light & Dark mode** - Choose between Light mode (closest looking like a book) and Dark mode (great for low light)
 - **Image rendering** - Display book covers, illustrations, and diagrams natively
 - **Automatic pagination** - Smart text flow with chapter detection
 - **Partial screen refresh** - Fast page turns with minimal full screen flicker
@@ -148,7 +150,7 @@ The project leverages the InkPlate 6 Flick's excellent recycled e-paper displays
 ## Future Development Roadmap
 
 ### Software Improvements Ideas
-- **WiFi connectivity** - Over-the-air library management and book upload
+- [x] **WiFi connectivity** - Over-the-air library management and book upload
 - **Enhanced user settings** - More customization options
 - **Reading statistics** - Track reading speed, time spent, books completed
 - **Note-taking system** - Highlight text and add personal annotations
@@ -184,9 +186,11 @@ Special thanks to the open-source hardware community for inspiration and the exi
 This project is released under an open-source license, encouraging modification, redistribution, and community contribution. All source code, documentation, and design files will be made available through public repositories.
 
 **Repository Structure:**
-- `/src` - Main firmware source code
+- `/ebook_reader.ino` - Main Arduino project
 - `/libs` - Custom library implementations
 - `/docs` - Build guides and technical documentation
+- `/sdcard` - SD Card contents
+- `/Fonts` - Custom fonts folder
 
 ## Get Involved
 
