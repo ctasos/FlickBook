@@ -22,7 +22,7 @@ static const GFXfont *FONT_ALT_SMALL = &FreeSans12pt7b;
 static const GFXfont *FONT_ALT_DEFAULT = &FreeSans13pt7b;
 static const GFXfont *FONT_ALT_LARGE = &FreeSans18pt7b;
 
-UIManager::UIManager(Inkplate *display, bool grayscale) : display(display), currentScreen(0), previousScreen(0), grayscale(grayscale), scrollIndex(0), currentSection(0), currentSectionIndex(0), previousSectionIndex(0), nextSectionIndex(0), totalSections(0), pageContent(""), pagePath("") {}
+UIManager::UIManager(Inkplate *display, bool grayscale) : display(display), currentScreen(0), currentSubScreen(0), previousScreen(0), grayscale(grayscale), scrollIndex(0), currentSection(0), currentSectionIndex(0), previousSectionIndex(0), nextSectionIndex(0), totalSections(0), pageContent(""), pagePath("") {}
 
 void UIManager::init()
 {

@@ -218,57 +218,85 @@ void UIManager::renderSettings(bool partial_update)
     setFont(FONT_ALT, FONT_SIZE_DEFAULT);
     display->drawRect(SETTINGS_PAGE_X, SETTINGS_PAGE_Y, SETTINGS_PAGE_W, SETTINGS_PAGE_H, settingsManager.getFgColor());
 
-    display->fillRect(SETTINGS_TAB_1[0], SETTINGS_TAB_1[1], SETTINGS_TAB_1[2], SETTINGS_TAB_1[3], settingsManager.getFgColor());
-    drawIcon(SETTINGS_TAB_ICON[0], SETTINGS_TAB_1[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_1[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, !settingsManager.getDarkMode());
-    display->drawRect(SETTINGS_TAB_2[0], SETTINGS_TAB_2[1], SETTINGS_TAB_2[2], SETTINGS_TAB_2[3], settingsManager.getFgColor());
-    drawIcon(SETTINGS_TAB_ICON[1], SETTINGS_TAB_2[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_2[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, settingsManager.getDarkMode());
-    display->drawRect(SETTINGS_TAB_3[0], SETTINGS_TAB_3[1], SETTINGS_TAB_3[2], SETTINGS_TAB_3[3], settingsManager.getFgColor());
-    drawIcon(SETTINGS_TAB_ICON[2], SETTINGS_TAB_3[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_3[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, settingsManager.getDarkMode());
-
-    display->setCursor(SETTINGS_ITEM_1[0], SETTINGS_ITEM_1[1]);
-    display->print("Backlight");
-    display->setCursor(SETTINGS_PAGE_X + SETTINGS_PAGE_W - 50, SETTINGS_ITEM_1[1]);
-    display->print(settingsManager.getBacklight());
-    display->drawThickLine(SETTINGS_SEP_1[0], SETTINGS_SEP_1[1], SETTINGS_SEP_1[2], SETTINGS_SEP_1[3], settingsManager.getFgColor(), SETTINGS_SEP_1[4]);
-
-    display->setCursor(SETTINGS_ITEM_2[0], SETTINGS_ITEM_2[1]);
-    display->print("Gestures");
-    if (settingsManager.getGestures())
+    if (currentSubScreen == SETTINGS_TAB_1_ID)
     {
-        drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+        display->fillRect(SETTINGS_TAB_1[0], SETTINGS_TAB_1[1], SETTINGS_TAB_1[2], SETTINGS_TAB_1[3], settingsManager.getFgColor());
     }
     else
     {
-        drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+        display->drawRect(SETTINGS_TAB_1[0], SETTINGS_TAB_1[1], SETTINGS_TAB_1[2], SETTINGS_TAB_1[3], settingsManager.getFgColor());
     }
-    display->drawThickLine(SETTINGS_SEP_2[0], SETTINGS_SEP_2[1], SETTINGS_SEP_2[2], SETTINGS_SEP_2[3], settingsManager.getFgColor(), SETTINGS_SEP_2[4]);
 
-    display->setCursor(SETTINGS_ITEM_3[0], SETTINGS_ITEM_3[1]);
-    display->print("Webserver");
-    if (settingsManager.getWebserver())
+    if (currentSubScreen == SETTINGS_TAB_2_ID)
     {
-        drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
-        // Show connection info below the toggle
-        setFont(FONT_PRIM, FONT_SIZE_SMALL);
-        display->setCursor(SETTINGS_ITEM_3[0], SETTINGS_ITEM_3[1] + FONT_SIZE_DEFAULT_PX + SETTINGS_ITEM_SUBTITLE_Y);
-        display->print("SSID: FlickBook  IP: " + webServerManager.getAPIP());
-        setFont(FONT_PRIM, FONT_SIZE_DEFAULT);
+        display->fillRect(SETTINGS_TAB_2[0], SETTINGS_TAB_2[1], SETTINGS_TAB_2[2], SETTINGS_TAB_2[3], settingsManager.getFgColor());
     }
     else
     {
-        drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+        display->drawRect(SETTINGS_TAB_2[0], SETTINGS_TAB_2[1], SETTINGS_TAB_2[2], SETTINGS_TAB_2[3], settingsManager.getFgColor());
     }
-    display->drawThickLine(SETTINGS_SEP_3[0], SETTINGS_SEP_3[1], SETTINGS_SEP_3[2], SETTINGS_SEP_3[3], settingsManager.getFgColor(), SETTINGS_SEP_3[4]);
 
-    display->setCursor(SETTINGS_ITEM_4[0], SETTINGS_ITEM_4[1]);
-    display->print("Dark Mode");
-    if (settingsManager.getDarkMode())
+    if (currentSubScreen == SETTINGS_TAB_3_ID)
     {
-        drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_4[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+        display->fillRect(SETTINGS_TAB_3[0], SETTINGS_TAB_3[1], SETTINGS_TAB_3[2], SETTINGS_TAB_3[3], settingsManager.getFgColor());
     }
     else
     {
-        drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_4[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+        display->drawRect(SETTINGS_TAB_3[0], SETTINGS_TAB_3[1], SETTINGS_TAB_3[2], SETTINGS_TAB_3[3], settingsManager.getFgColor());
+    }
+
+    drawIcon(SETTINGS_TAB_ICON[1], SETTINGS_TAB_2[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_2[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, (currentSubScreen == SETTINGS_TAB_2_ID) != settingsManager.getDarkMode());
+    drawIcon(SETTINGS_TAB_ICON[0], SETTINGS_TAB_1[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_1[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, (currentSubScreen == SETTINGS_TAB_1_ID) != settingsManager.getDarkMode());
+    drawIcon(SETTINGS_TAB_ICON[2], SETTINGS_TAB_3[0] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, SETTINGS_TAB_3[1] + (SETTINGS_TAB_SIZE - SETTINGS_TAB_ICON_SIZE) / 2, (currentSubScreen == SETTINGS_TAB_3_ID) != settingsManager.getDarkMode());
+
+    if (currentSubScreen == SETTINGS_TAB_1_ID)
+    {
+        display->setCursor(SETTINGS_ITEM_1[0], SETTINGS_ITEM_1[1]);
+        display->print("Backlight");
+        display->setCursor(SETTINGS_PAGE_X + SETTINGS_PAGE_W - 50, SETTINGS_ITEM_1[1]);
+        display->print(settingsManager.getBacklight());
+        display->drawThickLine(SETTINGS_SEP_1[0], SETTINGS_SEP_1[1], SETTINGS_SEP_1[2], SETTINGS_SEP_1[3], settingsManager.getFgColor(), SETTINGS_SEP_1[4]);
+
+        display->setCursor(SETTINGS_ITEM_2[0], SETTINGS_ITEM_2[1]);
+        display->print("Gestures");
+        if (settingsManager.getGestures())
+        {
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+        }
+        else
+        {
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+        }
+        display->drawThickLine(SETTINGS_SEP_2[0], SETTINGS_SEP_2[1], SETTINGS_SEP_2[2], SETTINGS_SEP_2[3], settingsManager.getFgColor(), SETTINGS_SEP_2[4]);
+
+        display->setCursor(SETTINGS_ITEM_3[0], SETTINGS_ITEM_3[1]);
+        display->print("Dark Mode");
+        if (settingsManager.getDarkMode())
+        {
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+        }
+        else
+        {
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+        }
+    }
+    else if (currentSubScreen == SETTINGS_TAB_3_ID)
+    {
+        display->setCursor(SETTINGS_ITEM_1[0], SETTINGS_ITEM_1[1]);
+        display->print("Webserver");
+        if (settingsManager.getWebserver())
+        {
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_1[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+            // Show connection info below the toggle
+            setFont(FONT_PRIM, FONT_SIZE_SMALL);
+            display->setCursor(SETTINGS_ITEM_1[0], SETTINGS_ITEM_1[1] + FONT_SIZE_DEFAULT_PX + SETTINGS_ITEM_SUBTITLE_Y);
+            display->print("SSID: FlickBook  IP: " + webServerManager.getAPIP());
+            setFont(FONT_PRIM, FONT_SIZE_DEFAULT);
+        }
+        else
+        {
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_1[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+        }
     }
 
     if (partial_update)

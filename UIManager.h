@@ -114,6 +114,9 @@ const uint8_t LIST_MAX_FILES = (TOT_H - LIST_START_Y - MENU_ICON_SIZE - HEADER_H
 #define SETTINGS_TAB_X (50)
 #define SETTINGS_TAB_Y (100)
 #define SETTINGS_TAB_SIZE (100)
+#define SETTINGS_TAB_1_ID (0)
+#define SETTINGS_TAB_2_ID (1)
+#define SETTINGS_TAB_3_ID (2)
 const int SETTINGS_TAB_1[] = {SETTINGS_TAB_X, SETTINGS_TAB_Y, SETTINGS_TAB_SIZE, SETTINGS_TAB_SIZE};
 const int SETTINGS_TAB_2[] = {SETTINGS_TAB_X + SETTINGS_TAB_SIZE, SETTINGS_TAB_Y, SETTINGS_TAB_SIZE, SETTINGS_TAB_SIZE};
 const int SETTINGS_TAB_3[] = {SETTINGS_TAB_X + 2 * SETTINGS_TAB_SIZE, SETTINGS_TAB_Y, SETTINGS_TAB_SIZE, SETTINGS_TAB_SIZE};
@@ -202,6 +205,7 @@ public:
 private:
     Inkplate *display;
     uint8_t currentScreen;
+    uint8_t currentSubScreen;
     uint8_t previousScreen;
     bool grayscale;
     int scrollIndex;

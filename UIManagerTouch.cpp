@@ -629,45 +629,84 @@ bool UIManager::handleTouchSettingsPage(uint16_t x, uint16_t y, uint8_t touch_ty
 {
     if (currentScreen == SETTINGS_SCREEN)
     {
-        if ((x >= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70)) and (y >= (SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2)) and (x <= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70 + SETTINGS_ITEM_STATUS_ICON_SIZE)) and (y <= (SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2 + SETTINGS_ITEM_STATUS_ICON_SIZE)))
+        if ((x >= SETTINGS_TAB_1[0]) and (y >= SETTINGS_TAB_1[1]) and (x <= (SETTINGS_TAB_1[0] + SETTINGS_TAB_1[2])) and (y <= (SETTINGS_TAB_1[1] + SETTINGS_TAB_1[3])))
         {
             if (touch_type == TOUCH_TYPE_SHORT)
             {
-                Serial.println("Touched Settings Item Gestures: Short Touch");
-                settingsManager.setGestures(!settingsManager.getGestures());
+                Serial.println("Touched Settings Tab Gestures: TAB 1");
+                currentSubScreen = SETTINGS_TAB_1_ID;
                 renderScreen(SETTINGS_SCREEN, true, true);
                 flushTS(50);
                 return true;
             }
         }
-        else if ((x >= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70)) and (y >= (SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2)) and (x <= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70 + SETTINGS_ITEM_STATUS_ICON_SIZE)) and (y <= (SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2 + SETTINGS_ITEM_STATUS_ICON_SIZE)))
+        else if ((x >= SETTINGS_TAB_2[0]) and (y >= SETTINGS_TAB_2[1]) and (x <= (SETTINGS_TAB_2[0] + SETTINGS_TAB_2[2])) and (y <= (SETTINGS_TAB_2[1] + SETTINGS_TAB_2[3])))
         {
             if (touch_type == TOUCH_TYPE_SHORT)
             {
-                Serial.println("Touched Settings Item WebServer: Short Touch");
-                settingsManager.setWebserver(!settingsManager.getWebserver());
-                if (settingsManager.getWebserver())
-                {
-                    webServerManager.start();
-                }
-                else
-                {
-                    webServerManager.stop();
-                }
+                Serial.println("Touched Settings Tab Gestures: TAB 2");
+                currentSubScreen = SETTINGS_TAB_2_ID;
                 renderScreen(SETTINGS_SCREEN, true, true);
                 flushTS(50);
                 return true;
             }
         }
-        else if ((x >= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70)) and (y >= (SETTINGS_ITEM_4[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2)) and (x <= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70 + SETTINGS_ITEM_STATUS_ICON_SIZE)) and (y <= (SETTINGS_ITEM_4[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2 + SETTINGS_ITEM_STATUS_ICON_SIZE)))
+        else if ((x >= SETTINGS_TAB_3[0]) and (y >= SETTINGS_TAB_3[1]) and (x <= (SETTINGS_TAB_3[0] + SETTINGS_TAB_3[2])) and (y <= (SETTINGS_TAB_3[1] + SETTINGS_TAB_3[3])))
         {
             if (touch_type == TOUCH_TYPE_SHORT)
             {
-                Serial.println("Touched Settings Item DarkMode: Short Touch");
-                settingsManager.setDarkMode(!settingsManager.getDarkMode());
-                renderScreen(SETTINGS_SCREEN, false, true);
+                Serial.println("Touched Settings Tab Gestures: TAB 3");
+                currentSubScreen = SETTINGS_TAB_3_ID;
+                renderScreen(SETTINGS_SCREEN, true, true);
                 flushTS(50);
                 return true;
+            }
+        }
+        if (currentSubScreen == SETTINGS_TAB_1_ID)
+        {
+            if ((x >= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70)) and (y >= (SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2)) and (x <= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70 + SETTINGS_ITEM_STATUS_ICON_SIZE)) and (y <= (SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2 + SETTINGS_ITEM_STATUS_ICON_SIZE)))
+            {
+                if (touch_type == TOUCH_TYPE_SHORT)
+                {
+                    Serial.println("Touched Settings Item Gestures: Short Touch");
+                    settingsManager.setGestures(!settingsManager.getGestures());
+                    renderScreen(SETTINGS_SCREEN, true, true);
+                    flushTS(50);
+                    return true;
+                }
+            }
+            else if ((x >= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70)) and (y >= (SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2)) and (x <= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70 + SETTINGS_ITEM_STATUS_ICON_SIZE)) and (y <= (SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2 + SETTINGS_ITEM_STATUS_ICON_SIZE)))
+            {
+                if (touch_type == TOUCH_TYPE_SHORT)
+                {
+                    Serial.println("Touched Settings Item DarkMode: Short Touch");
+                    settingsManager.setDarkMode(!settingsManager.getDarkMode());
+                    renderScreen(SETTINGS_SCREEN, false, true);
+                    flushTS(50);
+                    return true;
+                }
+            }
+        }
+        else if (currentSubScreen == SETTINGS_TAB_3_ID)
+        {
+            if ((x >= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70)) and (y >= (SETTINGS_ITEM_1[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2)) and (x <= (SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70 + SETTINGS_ITEM_STATUS_ICON_SIZE)) and (y <= (SETTINGS_ITEM_1[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2 + SETTINGS_ITEM_STATUS_ICON_SIZE)))
+            {
+                if (touch_type == TOUCH_TYPE_SHORT)
+                {
+                    Serial.println("Touched Settings Item WebServer: Short Touch");
+                    settingsManager.setWebserver(!settingsManager.getWebserver());
+                    if (settingsManager.getWebserver())
+                    {
+                        webServerManager.start();
+                    }
+                    else
+                    {
+                        webServerManager.stop();
+                    }
+                    renderScreen(SETTINGS_SCREEN, true, true);
+                    flushTS(50);
+                    return true;
+                }
             }
         }
     }
