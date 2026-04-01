@@ -35,7 +35,7 @@ void SettingsManager::loadSettings()
     // fontSize = doc["fontSize"];
     gestures = bool(doc["gestures"].as<int>());
     backlight = doc["backlight"].as<int>();
-    webserver = bool(doc["webserver"].as<int>());
+    // webserver = bool(doc["webserver"].as<int>());
     darkMode = bool(doc["darkMode"].as<int>());
     Serial.printf("Loaded gestures:%d, backlight:%d, webserver:%d, darkMode:%d\n", gestures, backlight, webserver, darkMode);
     //     settingsFile.close();
@@ -45,8 +45,8 @@ void SettingsManager::loadSettings()
 void SettingsManager::saveSettings()
 {
 
-  String keys[] = {"gestures", "backlight", "webserver", "darkMode"};
-  String values[] = {String(gestures), String(backlight), String(webserver), String(darkMode)};
+  String keys[] = {"gestures", "backlight", "darkMode"};
+  String values[] = {String(gestures), String(backlight), String(darkMode)};
 
   sdHandler.saveJson(settings_file, keys, values, NUMITEMS(keys));
 }
@@ -74,7 +74,7 @@ bool SettingsManager::getWebserver()
 void SettingsManager::setWebserver(bool val)
 {
   webserver = val;
-  saveSettings();
+  // saveSettings();
 }
 
 bool SettingsManager::getDarkMode()
