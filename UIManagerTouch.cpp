@@ -242,7 +242,7 @@ bool UIManager::handleTouchBookList(uint16_t x, uint16_t y, uint8_t touch_type)
             {
                 if (touch_type == TOUCH_TYPE_SHORT)
                 {
-                    std::vector<String> bookList = libraryManager.getLibrary();
+                    std::vector<BookInfo> bookList = libraryManager.getLibrary();
                     int newScrollIndex = min((int)bookList.size() - LIST_MAX_FILES, scrollIndex + 3);
                     if (newScrollIndex != scrollIndex)
                     {
@@ -261,16 +261,16 @@ bool UIManager::handleTouchBookList(uint16_t x, uint16_t y, uint8_t touch_type)
             if (y > LIST_START_Y and y < (LIST_START_Y + (LIST_MAX_FILES + 1) * LIST_ITEM_HEIGHT))
             {
                 int index = (y - LIST_START_Y) / LIST_ITEM_HEIGHT;
-                std::vector<String> bookList = libraryManager.getLibrary();
+                std::vector<BookInfo> bookList = libraryManager.getLibrary();
                 if (index >= 0 && index < LIST_MAX_FILES && (scrollIndex + index) < bookList.size())
                 {
 
                     if (touch_type == TOUCH_TYPE_SHORT)
                     {
                         Serial.print("Selected file: ");
-                        Serial.println(bookList[scrollIndex + index]);
+                        Serial.println(bookList[scrollIndex + index].name);
                         flushTS(30);
-                        libraryManager.loadCurrentBook(bookList[scrollIndex + index]);
+                        libraryManager.loadCurrentBook(bookList[scrollIndex + index].name);
                         currentSection = libraryManager.getCurrentSection();
                         // currentSectionIndex = libraryManager.getCurrentSectionIndex();
                         // nextSectionIndex = currentSectionIndex;
@@ -282,9 +282,9 @@ bool UIManager::handleTouchBookList(uint16_t x, uint16_t y, uint8_t touch_type)
                     else if (touch_type == TOUCH_TYPE_LONG)
                     {
                         Serial.print("Long pressed: ");
-                        Serial.println(bookList[scrollIndex + index]);
+                        Serial.println(bookList[scrollIndex + index].name);
                         flushTS(30);
-                        libraryManager.loadCurrentBook(bookList[scrollIndex + index]);
+                        libraryManager.loadCurrentBook(bookList[scrollIndex + index].name);
                         // currentSection = libraryManager.getCurrentSection();
                         // currentSectionIndex = libraryManager.getCurrentSectionIndex();
                         // nextSectionIndex = currentSectionIndex;

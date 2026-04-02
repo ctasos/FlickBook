@@ -5,6 +5,18 @@
 #include "EpubParser.h"
 #include <ArduinoJson.h>
 
+struct BookInfo
+{
+    String name;
+    String pages;
+    int lastPage;
+    int lastSection;
+    int lastSectionIndex;
+    String title;
+    String author;
+    bool isFinished;
+};
+
 class LibraryManager
 {
 public:
@@ -12,8 +24,7 @@ public:
     void init();
     void loadLibrary();
     bool loadBookUserData();
-    StaticJsonDocument<4096> fetchBookUserData(String book);
-    std::vector<String> getLibrary();
+    std::vector<BookInfo> getLibrary();
     bool getShowFinishedBooks();
     void setShowFinishedBooks(bool showFinishedBooks);
     bool saveBookUserData();
@@ -45,7 +56,10 @@ private:
     String currentPageString;
     String currentPagePath;
     StaticJsonDocument<4096> userData;
-    std::vector<String> library;
+    std::vector<BookInfo> library;
     bool showFinishedBooks;
+    void updateLibraryBookInfo();
+    BookInfo bookInfoFromJson(const String &name, const StaticJsonDocument<4096> &doc);
+    bool hasUserData();
 };
 #endif

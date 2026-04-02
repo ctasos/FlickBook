@@ -17,7 +17,8 @@ void LibraryManager::init()
   for (const String book : bookList)
   {
     Serial.println(book);
-    if (std::find(library.begin(), library.end(), book) == library.end())
+    if (std::find_if(library.begin(), library.end(), [&book](const BookInfo &b)
+                     { return b.name == book; }) == library.end())
     {
       if (!sdHandler.folderExists(book))
       {
@@ -46,16 +47,19 @@ void LibraryManager::init()
 
 void LibraryManager::loadLibrary()
 {
-  library = sdHandler.listFiles("/library", true);
-  // for(const String book : library) {
-  //   Serial.println(book);
-  // }
+  std::vector<String> folders = sdHandler.listFiles("/library", true);
+  library.clear();
+  for (const String &book : folders)
+  {
+    StaticJsonDocument<4096> ud = sdHandler.loadJson("/library/" + book + "/user.json");
+    library.push_back(bookInfoFromJson(book, ud));
+  }
 }
 
 bool LibraryManager::loadBookUserData()
 {
   userData = sdHandler.loadJson("/library/" + currentBook + "/user.json");
-  if (userData.isNull() || userData.size() == 0)
+  if (!hasUserData())
   {
     Serial.print("Loaded empty User Data: ");
     return false;
@@ -66,30 +70,46 @@ bool LibraryManager::loadBookUserData()
   return true;
 }
 
-StaticJsonDocument<4096> LibraryManager::fetchBookUserData(String book)
+BookInfo LibraryManager::bookInfoFromJson(const String &name, const StaticJsonDocument<4096> &doc)
 {
-  StaticJsonDocument<4096> tempUserData = sdHandler.loadJson("/library/" + book + "/user.json");
-  if (tempUserData.isNull() || tempUserData.size() == 0)
+  BookInfo info;
+  info.name = name;
+  if (!doc.isNull() && doc.size() > 0)
   {
-    Serial.print("Loaded empty User Data: ");
-    return tempUserData;
+    info.pages = doc["pages"].as<String>();
+    info.lastPage = doc["lastPage"].as<int>();
+    info.lastSection = doc["lastSection"].as<int>();
+    info.lastSectionIndex = doc["lastSectionIndex"].as<int>();
+    info.title = doc["title"].as<String>();
+    info.author = doc["author"].as<String>();
+    info.isFinished = bool(doc["isFinished"].as<int>());
   }
-  Serial.print("Fetched Book User data: ");
-  serializeJson(tempUserData, Serial);
-  Serial.println();
-  return tempUserData;
+  else
+  {
+    info.pages = "0";
+    info.lastPage = 0;
+    info.lastSection = 0;
+    info.lastSectionIndex = 0;
+    info.title = name;
+    info.author = "";
+    info.isFinished = false;
+  }
+  return info;
 }
 
-std::vector<String> LibraryManager::getLibrary()
+bool LibraryManager::hasUserData()
+{
+  return !userData.isNull() && userData.size() > 0;
+}
+
+std::vector<BookInfo> LibraryManager::getLibrary()
 {
   if (!showFinishedBooks)
   {
-    std::vector<String> filteredLibrary;
-    for (const String &book : library)
+    std::vector<BookInfo> filteredLibrary;
+    for (const BookInfo &book : library)
     {
-      StaticJsonDocument<4096> tempUserData = fetchBookUserData(book);
-      bool isFinished = bool(tempUserData["isFinished"].as<int>());
-      if (!isFinished)
+      if (!book.isFinished)
       {
         filteredLibrary.push_back(book);
       }
@@ -146,12 +166,25 @@ bool LibraryManager::saveBookUserData()
   Serial.print("Saving Book User data: ");
   serializeJson(userData, Serial);
   Serial.println();
+  updateLibraryBookInfo();
   return sdHandler.saveJson("/library/" + currentBook + "/user.json", userData);
+}
+
+void LibraryManager::updateLibraryBookInfo()
+{
+  for (BookInfo &book : library)
+  {
+    if (book.name == currentBook)
+    {
+      book = bookInfoFromJson(currentBook, userData);
+      break;
+    }
+  }
 }
 
 int LibraryManager::getCurrentPage()
 {
-  if (!userData.isNull() && !userData.size() == 0)
+  if (hasUserData())
   {
     int currentPage = userData["lastPage"].as<int>();
     Serial.println("Getting Current page: " + String(currentPage));
@@ -165,7 +198,7 @@ int LibraryManager::getCurrentPage()
 
 int LibraryManager::getCurrentSection()
 {
-  if (!userData.isNull() && !userData.size() == 0)
+  if (hasUserData())
   {
     int lastSection = userData["lastSection"].as<int>();
     Serial.println("Getting last section: " + String(lastSection));
@@ -179,7 +212,7 @@ int LibraryManager::getCurrentSection()
 
 int LibraryManager::getCurrentSectionIndex()
 {
-  if (!userData.isNull() && !userData.size() == 0)
+  if (hasUserData())
   {
     int lastSectionIndex = userData["lastSectionIndex"].as<int>();
     Serial.println("Getting last section index: " + String(lastSectionIndex));
@@ -192,7 +225,7 @@ int LibraryManager::getCurrentSectionIndex()
 }
 int LibraryManager::getTotalPage()
 {
-  if (!userData.isNull() && !userData.size() == 0)
+  if (hasUserData())
   {
     int totalPage = userData["pages"].as<int>();
     Serial.println("Getting Total pages: " + String(totalPage));
@@ -206,7 +239,7 @@ int LibraryManager::getTotalPage()
 
 String LibraryManager::getTitle()
 {
-  if (!userData.isNull() && !userData.size() == 0)
+  if (hasUserData())
   {
     String title = userData["title"];
     Serial.println("Getting Title: " + title);
@@ -220,7 +253,7 @@ String LibraryManager::getTitle()
 
 String LibraryManager::getAuthor()
 {
-  if (!userData.isNull() && !userData.size() == 0)
+  if (hasUserData())
   {
     String author = userData["author"];
     Serial.println("Getting Author: " + author);
@@ -251,7 +284,7 @@ String LibraryManager::getCurrentPagePath()
 
 void LibraryManager::setCurrentPage(int page)
 {
-  if (!userData.isNull() && !userData.size() == 0)
+  if (hasUserData())
   {
     if (page < 0 || page >= getTotalPage())
     {
@@ -265,7 +298,7 @@ void LibraryManager::setCurrentPage(int page)
 
 void LibraryManager::setCurrentSection(int section)
 {
-  if (!userData.isNull() && !userData.size() == 0)
+  if (hasUserData())
   {
     if (section < 0)
     {
@@ -279,7 +312,7 @@ void LibraryManager::setCurrentSection(int section)
 
 void LibraryManager::setCurrentSectionIndex(int section_index)
 {
-  if (!userData.isNull() && !userData.size() == 0)
+  if (hasUserData())
   {
     if (section_index < 0)
     {
@@ -320,7 +353,7 @@ bool LibraryManager::prevPage()
 
 bool LibraryManager::getIsFinished()
 {
-  if (!userData.isNull() && !userData.size() == 0)
+  if (hasUserData())
   {
     bool isFinished = bool(userData["isFinished"].as<int>());
     Serial.println("Getting isFinished: " + String(isFinished));
@@ -334,7 +367,7 @@ bool LibraryManager::getIsFinished()
 
 void LibraryManager::setIsFinished(bool isFinished)
 {
-  if (!userData.isNull() && !userData.size() == 0)
+  if (hasUserData())
   {
     Serial.println("Setting isFinished: " + String(isFinished));
     userData["isFinished"] = String(isFinished);
