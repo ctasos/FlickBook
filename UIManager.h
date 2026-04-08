@@ -20,7 +20,7 @@
 #include "SettingsManager.h"
 #include "LibraryManager.h"
 #include "SDHandler.h"
-// #include "libs/TJpg_Decoder.h"
+#include "ImageScaler.h"
 // #include "EpubParser.h"
 #define ICONS_FOLDER "/assets/icons/"
 #define ICON_BATTERY "battery_empty_icon.png"
@@ -204,6 +204,7 @@ public:
 
 private:
     Inkplate *display;
+    ImageScaler imageScaler;
     uint8_t currentScreen;
     uint8_t currentSubScreen;
     uint8_t previousScreen;

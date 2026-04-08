@@ -355,19 +355,22 @@ void UIManager::renderLoadingMsg(const String &message, bool partial_update)
 
 void UIManager::renderLoadingIcon(bool partial_update)
 {
-    drawIcon(HEADER_ITEM_LOADING_ICON, HEADER_ITEM_LOADING[0] + (HEADER_ITEM_SIZE - HEADER_ICON_SIZE) / 2, HEADER_ITEM_LOADING[1] + (HEADER_ITEM_SIZE - HEADER_ICON_SIZE) / 2, true);
 
     if (partial_update)
     {
         if (PARTIAL_UPDATE_ALLOWED)
+        {
+
+            drawIcon(HEADER_ITEM_LOADING_ICON, HEADER_ITEM_LOADING[0] + (HEADER_ITEM_SIZE - HEADER_ICON_SIZE) / 2, HEADER_ITEM_LOADING[1] + (HEADER_ITEM_SIZE - HEADER_ICON_SIZE) / 2, true);
             display->partialUpdate();
-        else
-            display->display();
+        }
+        // else
+        // display->display();
     }
-    else
-    {
-        display->display();
-    }
+    // else
+    // {
+    // display->display();
+    // }
 }
 
 /**
@@ -411,22 +414,8 @@ void UIManager::renderImage(const String &imgPath, int x, int y, bool invert)
 {
     Serial.printf("Rendering image at %d, %d: %s\n", x, y, imgPath.c_str());
 
-    SdFile imgFile;
-    if (!imgFile.open(imgPath.c_str(), O_RDONLY))
+    if (!imageScaler.drawImageFitTo(imgPath.c_str(), x, y, BOOK_PAGE_W, BOOK_PAGE_H, true, invert))
     {
-        Serial.println("Image not found!");
-        return;
+        Serial.println("Failed to render image!");
     }
-
-    int imgW, imgH;
-    if (!sdHandler.getImageDimensions(imgPath, imgW, imgH))
-    {
-        Serial.println("Failed to get image dimensions.");
-        imgFile.close();
-        return;
-    }
-    // TJpgDec->setJpgScale(4);
-    display->drawImage(imgPath.c_str(), x, y, 1, invert);
-    imgFile.close();
-    return;
 }

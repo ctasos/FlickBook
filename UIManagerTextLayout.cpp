@@ -77,7 +77,12 @@ void UIManager::processTextBlock(
             fullImgPath = sdHandler.normalizePath(fullImgPath);
 
             int imgW, imgH;
-            sdHandler.getImageDimensions(fullImgPath, imgW, imgH);
+            if (!imageScaler.getScaledDimensions(fullImgPath.c_str(), width, height, imgW, imgH))
+            {
+                Serial.println("Failed to get image dimensions for: " + fullImgPath);
+                i = tagEndIndex;
+                continue;
+            }
 
             // If image is taller than the page height, ensure it's rendered starting on a fresh page.
             if (imgH > height)
