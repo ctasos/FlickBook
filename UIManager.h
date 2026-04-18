@@ -21,7 +21,13 @@
 #include "LibraryManager.h"
 #include "SDHandler.h"
 #include "ImageScaler.h"
+
+extern "C"
+{
+#include "libs/qrcode.h"
+}
 // #include "EpubParser.h"
+#include "WebServerManager.h"
 #define ICONS_FOLDER "/assets/icons/"
 #define ICON_BATTERY "battery_empty_icon.png"
 #define ICON_BATTERY_W 70
@@ -142,6 +148,8 @@ const String SETTINGS_ITEM_STATUS_ICON[] = {"circle_blank_icon", "circle_check_i
 const int SETTINGS_SEP_1[] = {SETTINGS_SEP_X1, SETTINGS_TAB_Y + SETTINGS_TAB_SIZE + SETTINGS_ITEM_SIZE, SETTINGS_SEP_X2, SETTINGS_TAB_Y + SETTINGS_TAB_SIZE + SETTINGS_ITEM_SIZE, BLACK, SETTINGS_SEP_THICKNESS};
 const int SETTINGS_SEP_2[] = {SETTINGS_SEP_X1, SETTINGS_TAB_Y + SETTINGS_TAB_SIZE + 2 * SETTINGS_ITEM_SIZE, SETTINGS_SEP_X2, SETTINGS_TAB_Y + SETTINGS_TAB_SIZE + 2 * SETTINGS_ITEM_SIZE, BLACK, SETTINGS_SEP_THICKNESS};
 const int SETTINGS_SEP_3[] = {SETTINGS_SEP_X1, SETTINGS_TAB_Y + SETTINGS_TAB_SIZE + 3 * SETTINGS_ITEM_SIZE, SETTINGS_SEP_X2, SETTINGS_TAB_Y + SETTINGS_TAB_SIZE + 3 * SETTINGS_ITEM_SIZE, BLACK, SETTINGS_SEP_THICKNESS};
+#define QR_SIZE (4)
+const int QR_WIFI_POS[] = {SETTINGS_PAGE_X + (SETTINGS_PAGE_W - 25 * QR_SIZE - 70), SETTINGS_ITEM_1[1] - 25 * QR_SIZE / 2}; // QR v1 = 21 modules, v2 = 25 modules, v3 = 29 modules
 #define LOADING_MSG_W (200)
 #define LOADING_MSG_H (80)
 #define LOADING_MSG_X ((TOT_W - LOADING_MSG_W) / 2)
@@ -201,6 +209,7 @@ public:
         std::function<void(size_t)> onPageBreak,
         int startIdx = 0);
     void renderSettings(bool partial_update = false);
+    void drawQRCode(const String &data, int x, int y, int moduleSize, int fgColor, int bgColor);
 
 private:
     Inkplate *display;

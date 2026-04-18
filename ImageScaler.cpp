@@ -7,7 +7,6 @@
  * Floyd-Steinberg dithering and grayscale conversion.
  */
 #include "ImageScaler.h"
-#include "SDHandler.h"
 
 extern SDHandler sdHandler;
 

@@ -6,6 +6,9 @@
 #include <WebServer.h>
 #include "SDHandler.h"
 
+#define AP_SSID "FlickBook"
+#define AP_PASSWORD "myflickbook"
+
 class WebServerManager
 {
 public:
@@ -15,6 +18,7 @@ public:
     void handleClient();
     bool isRunning();
     String getAPIP();
+    String getWifiQRString();
 
 private:
     Inkplate *display;

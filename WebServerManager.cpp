@@ -9,7 +9,7 @@ void WebServerManager::start()
     if (running)
         return;
 
-    WiFi.softAP("FlickBook", "myflickbook");
+    WiFi.softAP(AP_SSID, AP_PASSWORD);
     Serial.println("WiFi AP started. IP: " + WiFi.softAPIP().toString());
 
     server.on("/", HTTP_GET, [this]()
@@ -54,6 +54,11 @@ void WebServerManager::handleClient()
     if (!running)
         return;
     server.handleClient();
+}
+
+String WebServerManager::getWifiQRString()
+{
+    return "WIFI:T:WPA;S:" + String(AP_SSID) + ";P:" + String(AP_PASSWORD) + ";H:false;;";
 }
 
 bool WebServerManager::isRunning()

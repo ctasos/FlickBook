@@ -1,6 +1,8 @@
 #include "UIManager.h"
-#include "WebServerManager.h"
-
+extern "C"
+{
+#include "libs/qrcode.c"
+}
 extern SettingsManager settingsManager;
 extern SDHandler sdHandler;
 extern LibraryManager libraryManager;
@@ -287,6 +289,9 @@ void UIManager::renderSettings(bool partial_update)
             display->setCursor(SETTINGS_ITEM_1[0], SETTINGS_ITEM_1[1] + FONT_SIZE_DEFAULT_PX + SETTINGS_ITEM_SUBTITLE_Y);
             display->print("SSID: FlickBook  IP: " + webServerManager.getAPIP());
             setFont(FONT_PRIM, FONT_SIZE_DEFAULT);
+
+            // Draw WiFi QR code below connection info
+            drawQRCode(webServerManager.getWifiQRString(), QR_WIFI_POS[0], QR_WIFI_POS[1], QR_SIZE, settingsManager.getFgColor(), settingsManager.getBgColor());
         }
         else
         {
@@ -417,5 +422,27 @@ void UIManager::renderImage(const String &imgPath, int x, int y, bool invert)
     if (!imageScaler.drawImageFitTo(imgPath.c_str(), x, y, BOOK_PAGE_W, BOOK_PAGE_H, true, invert))
     {
         Serial.println("Failed to render image!");
+    }
+}
+
+void UIManager::drawQRCode(const String &data, int x, int y, int moduleSize, int fgColor, int bgColor)
+{
+    QRCode qrcode;
+    uint8_t qrcodeData[qrcode_getBufferSize(3)];
+    qrcode_initText(&qrcode, qrcodeData, 1, ECC_LOW, data.c_str());
+
+    int qrSize = qrcode.size * moduleSize;
+    int padding = moduleSize * 2;
+    display->fillRect(x - padding, y - padding, qrSize + 2 * padding, qrSize + 2 * padding, bgColor);
+
+    for (uint8_t row = 0; row < qrcode.size; row++)
+    {
+        for (uint8_t col = 0; col < qrcode.size; col++)
+        {
+            if (qrcode_getModule(&qrcode, col, row))
+            {
+                display->fillRect(x + col * moduleSize, y + row * moduleSize, moduleSize, moduleSize, fgColor);
+            }
+        }
     }
 }

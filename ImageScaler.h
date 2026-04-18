@@ -11,7 +11,8 @@
 #define IMAGE_SCALER_H
 
 #include "Inkplate.h"
-#include "libs/TJpeg/TJpg_Decoder.h"
+#include "SDHandler.h"
+#include "libs/TJpg_Decoder.h"
 
 class ImageScaler
 {
