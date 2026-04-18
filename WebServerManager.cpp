@@ -28,6 +28,15 @@ void WebServerManager::start()
     server.on("/api/rename", HTTP_POST, [this]()
               { handleRename(); });
 
+    // Captive portal: redirect all unknown requests to root
+    server.onNotFound([this]()
+                      {
+                          server.sendHeader("Location", "http://" + WiFi.softAPIP().toString(), true);
+                          server.send(302, "text/plain", ""); });
+
+    // DNS server: resolve all domains to AP IP for captive portal
+    dnsServer.start(53, "*", WiFi.softAPIP());
+
     server.begin();
     running = true;
     Serial.println("Web server started on port 80");
@@ -39,6 +48,7 @@ void WebServerManager::stop()
         return;
 
     server.stop();
+    dnsServer.stop();
     WiFi.softAPdisconnect(true);
     running = false;
     Serial.println("Web server and WiFi AP stopped");
@@ -53,6 +63,7 @@ void WebServerManager::handleClient()
 {
     if (!running)
         return;
+    dnsServer.processNextRequest();
     server.handleClient();
 }
 

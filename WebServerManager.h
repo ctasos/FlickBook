@@ -4,6 +4,7 @@
 #include "Inkplate.h"
 #include <WiFi.h>
 #include <WebServer.h>
+#include <DNSServer.h>
 #include "SDHandler.h"
 
 #define AP_SSID "FlickBook"
@@ -23,6 +24,7 @@ public:
 private:
     Inkplate *display;
     WebServer server;
+    DNSServer dnsServer;
     bool running;
 
     String validatePath(const String &path);

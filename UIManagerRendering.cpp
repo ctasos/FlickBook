@@ -258,11 +258,11 @@ void UIManager::renderSettings(bool partial_update)
         display->print("Gestures");
         if (settingsManager.getGestures())
         {
-            drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - SETTINGS_VALUE_Y_OFFSET, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
         }
         else
         {
-            drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - SETTINGS_VALUE_Y_OFFSET, SETTINGS_ITEM_2[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
         }
         display->drawThickLine(SETTINGS_SEP_2[0], SETTINGS_SEP_2[1], SETTINGS_SEP_2[2], SETTINGS_SEP_2[3], settingsManager.getFgColor(), SETTINGS_SEP_2[4]);
 
@@ -270,11 +270,11 @@ void UIManager::renderSettings(bool partial_update)
         display->print("Dark Mode");
         if (settingsManager.getDarkMode())
         {
-            drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - SETTINGS_VALUE_Y_OFFSET, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
         }
         else
         {
-            drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - SETTINGS_VALUE_Y_OFFSET, SETTINGS_ITEM_3[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
         }
     }
     else if (currentSubScreen == SETTINGS_TAB_3_ID)
@@ -283,7 +283,7 @@ void UIManager::renderSettings(bool partial_update)
         display->print("Webserver");
         if (settingsManager.getWebserver())
         {
-            drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_1[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[1], SETTINGS_PAGE_X + SETTINGS_PAGE_W - SETTINGS_VALUE_Y_OFFSET, SETTINGS_ITEM_1[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
             // Show connection info below the toggle
             setFont(FONT_PRIM, FONT_SIZE_SMALL);
             display->setCursor(SETTINGS_ITEM_1[0], SETTINGS_ITEM_1[1] + FONT_SIZE_DEFAULT_PX + SETTINGS_ITEM_SUBTITLE_Y);
@@ -295,7 +295,7 @@ void UIManager::renderSettings(bool partial_update)
         }
         else
         {
-            drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - 70, SETTINGS_ITEM_1[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
+            drawIcon(SETTINGS_ITEM_STATUS_ICON[0], SETTINGS_PAGE_X + SETTINGS_PAGE_W - SETTINGS_VALUE_Y_OFFSET, SETTINGS_ITEM_1[1] - SETTINGS_ITEM_STATUS_ICON_SIZE / 2 - FONT_SIZE_DEFAULT_PX / 2, settingsManager.getDarkMode());
         }
     }
 
@@ -429,7 +429,7 @@ void UIManager::drawQRCode(const String &data, int x, int y, int moduleSize, int
 {
     QRCode qrcode;
     uint8_t qrcodeData[qrcode_getBufferSize(3)];
-    qrcode_initText(&qrcode, qrcodeData, 1, ECC_LOW, data.c_str());
+    qrcode_initText(&qrcode, qrcodeData, 3, ECC_LOW, data.c_str());
 
     int qrSize = qrcode.size * moduleSize;
     int padding = moduleSize * 2;
